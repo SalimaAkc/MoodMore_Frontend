@@ -7,7 +7,7 @@
 // IMPORTS
 // ===================================================================
 
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useLanguageStore } from '@/stores/language'
 import { supabase } from '@/lib/supabase'
@@ -78,6 +78,30 @@ async function toggleFollow(user, isCurrentlyFollowing) {
 function isFollowing(userId) {
   return followingIds.value.has(userId)
 }
+
+// ===================================================================
+// LIFECYCLE
+// ===================================================================
+
+onMounted(async () => {
+  if (!auth.user) return
+
+  try {
+    // load current user's following list
+    const result = await supabase
+      .from('follows')
+      .select('followee_id')
+      .eq('follower_id', auth.user.id)
+
+    if (result.data) {
+      result.data.forEach(follow => {
+        followingIds.value.add(follow.followee_id)
+      })
+    }
+  } catch (error) {
+    console.error('Could not load following list:', error)
+  }
+})
 </script>
 
 <template>
