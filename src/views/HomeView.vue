@@ -1,14 +1,23 @@
 <script setup>
-// The first page, pick a mood
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { useAuthStore } from '@/stores/auth'
 import { useLanguageStore } from '@/stores/language'
 import { MOODS } from '@/lib/moods'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const auth = useAuthStore()
 const lang = useLanguageStore()
 
-// Say good morning, afternoon or evening
+// ===================================================================
+// HELPER FUNCTIONS
+// ===================================================================
+
 function greeting() {
   const hour = new Date().getHours()
 
@@ -18,7 +27,6 @@ function greeting() {
   return lang.t('home.evening')
 }
 
-// Only the first name, so "Omar Yassine" becomes "Omar"
 function firstName() {
   const fullName = auth.displayName()
   return fullName.split(' ')[0]
@@ -27,12 +35,18 @@ function firstName() {
 
 <template>
   <div class="page">
+    <!-- =================================================================
+         HEADER - Introduction and greeting
+         ================================================================= -->
     <header class="intro">
       <p v-if="auth.user" class="hello">{{ greeting() }}, {{ firstName() }} 👋</p>
       <h1>{{ lang.t('home.title') }}</h1>
       <p class="subtitle">{{ lang.t('home.subtitle') }}</p>
     </header>
 
+    <!-- =================================================================
+         MOODS GRID - Clickable mood cards
+         ================================================================= -->
     <div class="grid">
       <RouterLink
         v-for="mood in MOODS"
@@ -47,6 +61,9 @@ function firstName() {
       </RouterLink>
     </div>
 
+    <!-- =================================================================
+         SIGNUP PROMPT - Call to action for logged out users
+         ================================================================= -->
     <div v-if="!auth.user" class="signup-box">
       <p>{{ lang.t('home.signupBox') }}</p>
       <RouterLink to="/signup" class="btn">{{ lang.t('home.signupButton') }}</RouterLink>
@@ -55,11 +72,19 @@ function firstName() {
 </template>
 
 <style scoped>
+/* ===================================================================
+   PAGE - Layout
+   =================================================================== */
+
 .page {
   max-width: 1000px;
   margin: 0 auto;
   padding: 60px 24px;
 }
+
+/* ===================================================================
+   INTRO - Header with greeting
+   =================================================================== */
 
 .intro {
   text-align: center;
@@ -71,7 +96,6 @@ function firstName() {
   margin-bottom: 12px;
 }
 
-/* clamp keeps the size between 2rem and 3.5rem */
 .intro h1 {
   font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 800;
@@ -82,7 +106,10 @@ function firstName() {
   color: var(--ink-soft);
 }
 
-/* Fit as many 240px columns as possible, then share the leftover space */
+/* ===================================================================
+   GRID & CARDS - Mood selection cards
+   =================================================================== */
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -118,6 +145,10 @@ function firstName() {
   color: var(--on-mood-soft);
   font-size: 0.88rem;
 }
+
+/* ===================================================================
+   SIGNUP BOX - Call to action
+   =================================================================== */
 
 .signup-box {
   margin-top: 48px;

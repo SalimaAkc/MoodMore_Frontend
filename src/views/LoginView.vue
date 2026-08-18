@@ -1,33 +1,48 @@
 <script setup>
-// Login page
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useLanguageStore } from '@/stores/language'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const auth = useAuthStore()
 const lang = useLanguageStore()
 const router = useRouter()
 const route = useRoute()
+
+// ===================================================================
+// STATE
+// ===================================================================
 
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
 const loading = ref(false)
 
-// Check that an address points inside our own app
+// ===================================================================
+// HELPER FUNCTIONS
+// ===================================================================
+
 function isSafeAddress(address) {
   if (typeof address !== 'string') return false
   if (!address.startsWith('/')) return false
 
-  // "//evil.com" is a real address to another website
   if (address.startsWith('//')) return false
 
   return true
 }
 
-// Log in and go to the page they wanted
+// ===================================================================
+// AUTHENTICATION
+// ===================================================================
+
 async function login() {
   errorMessage.value = ''
   loading.value = true
@@ -43,7 +58,6 @@ async function login() {
       router.push('/')
     }
   } catch (error) {
-    // Not saying which one was wrong, that would reveal if an email has an account
     errorMessage.value = lang.t('login.wrong')
   } finally {
     loading.value = false
@@ -52,13 +66,19 @@ async function login() {
 </script>
 
 <template>
+  <!-- =================================================================
+       PAGE - Login form container
+       ================================================================= -->
   <div class="page">
     <form class="card" @submit.prevent="login">
+      <!-- HEADER -->
       <h1>{{ lang.t('login.title') }}</h1>
       <p class="subtitle">{{ lang.t('login.subtitle') }}</p>
 
+      <!-- ERRORS -->
       <p v-if="errorMessage" class="error-box">{{ errorMessage }}</p>
 
+      <!-- FORM FIELDS -->
       <label>
         {{ lang.t('common.email') }}
         <input v-model="email" type="email" required autocomplete="email" />
@@ -69,10 +89,12 @@ async function login() {
         <input v-model="password" type="password" required autocomplete="current-password" />
       </label>
 
+      <!-- SUBMIT BUTTON -->
       <button class="btn" type="submit" :disabled="loading">
         {{ loading ? lang.t('login.busy') : lang.t('login.button') }}
       </button>
 
+      <!-- LINKS -->
       <p class="bottom">
         <RouterLink to="/forgot-password">{{ lang.t('login.forgot') }}</RouterLink>
       </p>
@@ -86,11 +108,19 @@ async function login() {
 </template>
 
 <style scoped>
+/* ===================================================================
+   PAGE - Layout and centering
+   =================================================================== */
+
 .page {
   display: flex;
   justify-content: center;
   padding: 60px 20px;
 }
+
+/* ===================================================================
+   CARD - Form container
+   =================================================================== */
 
 .card {
   display: flex;
@@ -117,6 +147,10 @@ h1 {
   margin-top: -10px;
 }
 
+/* ===================================================================
+   FORM ELEMENTS - Labels and inputs
+   =================================================================== */
+
 label {
   display: flex;
   flex-direction: column;
@@ -140,6 +174,10 @@ input {
 input:focus {
   border-color: var(--orange);
 }
+
+/* ===================================================================
+   LINKS - Bottom helper links
+   =================================================================== */
 
 .bottom {
   text-align: center;
