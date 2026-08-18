@@ -35,10 +35,7 @@ const followingIds = ref(new Set())
 // ===================================================================
 
 async function searchUsers() {
-  if (!searchQuery.value.trim()) {
-    users.value = []
-    return
-  }
+  // allow empty searches for testing
 
   loading.value = true
   errorMessage.value = ''
