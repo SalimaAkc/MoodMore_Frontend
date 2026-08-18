@@ -14,6 +14,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useLanguageStore } from '@/stores/language'
 import { usePlayerStore } from '@/stores/player'
 import { findMoodById } from '@/lib/moods'
+import { postToApi, deleteFromApi } from '@/lib/api'
 
 // ===================================================================
 // STORE SETUP
@@ -82,28 +83,26 @@ async function toggleFollow() {
   toggleFollowLoading.value = true
 
   try {
-    const endpoint = isFollowing.value
-      ? `/api/follow/${userId}`
-      : `/api/follow/${userId}`
+    const session = await supabase.auth.getSession()
+    const token = session.data.session?.access_token
 
-    const method = isFollowing.value ? 'DELETE' : 'POST'
+    if (!token) {
+      errorMessage.value = 'You are not logged in'
+      return
+    }
 
-    const response = await fetch(endpoint, {
-      method: method,
-      headers: {
-        'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session.access_token}`,
-        'Content-Type': 'application/json'
-      }
-    })
+    if (isFollowing.value) {
+      await deleteFromApi(`/api/follow/${userId}`, token)
+    } else {
+      await postToApi(`/api/follow/${userId}`, token)
+    }
 
-    if (response.ok) {
-      isFollowing.value = !isFollowing.value
+    isFollowing.value = !isFollowing.value
 
-      if (isFollowing.value) {
-        followers.value += 1
-      } else {
-        followers.value -= 1
-      }
+    if (isFollowing.value) {
+      followers.value += 1
+    } else {
+      followers.value -= 1
     }
   } catch (error) {
     errorMessage.value = 'Could not update follow status'
