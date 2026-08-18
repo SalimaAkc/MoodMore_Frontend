@@ -5,7 +5,7 @@ This guide uses Vercel, which is free and deploys from GitHub. Netlify or
 Cloudflare Pages work the same way.
 
 The backend is hosted separately, from its own repository. See
-[its DEPLOY.md](https://github.com/SalimaAkc/M-M_Backend/blob/main/DEPLOY.md).
+[its DEPLOY.md](https://github.com/SalimaAkc/MoodMore_Backend/blob/main/DEPLOY.md).
 
 Deploy the backend first. This side needs its address, and it needs to be told
 this side's address afterwards.
