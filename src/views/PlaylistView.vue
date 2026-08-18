@@ -1,5 +1,7 @@
 <script setup>
-// Shows the tracks inside one saved playlist
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -12,6 +14,10 @@ import { findMoodById, FAVORITES_MOOD } from '@/lib/moods'
 import { useLanguageStore } from '@/stores/language'
 import TrackList from '@/components/TrackList.vue'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const route = useRoute()
 const auth = useAuthStore()
 const player = usePlayerStore()
@@ -19,19 +25,25 @@ const favorites = useFavoritesStore()
 const playlists = usePlaylistsStore()
 const lang = useLanguageStore()
 
+// ===================================================================
+// STATE
+// ===================================================================
+
 const playlist = ref(null)
 const tracks = ref([])
 const loading = ref(true)
 const errorMessage = ref('')
 
-// Changes are kept here until Save is pressed, that is what makes Cancel work
 const isEditing = ref(false)
 const editName = ref('')
 const editTracks = ref([])
 const saving = ref(false)
 const saveError = ref('')
 
-// Copy the current values into the editing fields
+// ===================================================================
+// EDITING
+// ===================================================================
+
 function startEditing() {
   editName.value = playlist.value.name
   editTracks.value = tracks.value.slice()
@@ -43,12 +55,14 @@ function cancelEditing() {
   isEditing.value = false
 }
 
-// Take one track out of the editing list
 function removeTrack(track) {
   editTracks.value = editTracks.value.filter(item => item.videoId !== track.videoId)
 }
 
-// Write the new name and tracks to the database
+// ===================================================================
+// SAVE & LOAD
+// ===================================================================
+
 async function saveChanges() {
   const newName = editName.value.trim()
 
@@ -65,30 +79,29 @@ async function saveChanges() {
     .update({ name: newName, songs: editTracks.value })
     .eq('id', playlist.value.id)
 
-  // Stay in editing mode so the user does not lose their changes
   if (result.error) {
     saveError.value = lang.t('playlist.saveError')
     saving.value = false
     return
   }
 
-  // Only update the screen once the database accepted it
   playlist.value = Object.assign({}, playlist.value, { name: newName })
   tracks.value = editTracks.value
   isEditing.value = false
   saving.value = false
 
-  // The menu behind the + on a track still shows the old name
   playlists.reset()
 
-  // The hearts on the other pages are out of date now
   if (playlist.value.mood_id === FAVORITES_MOOD.id) {
     favorites.load(auth.user.id)
   }
 }
 
+// ===================================================================
+// LIFECYCLE
+// ===================================================================
+
 onMounted(async () => {
-  // Filtering on user_id too, even though the database rules already do it
   const result = await supabase
     .from('playlists')
     .select('id, name, mood_id, songs')

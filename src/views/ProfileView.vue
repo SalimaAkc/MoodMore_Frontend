@@ -1,7 +1,7 @@
 <script setup>
-// The user's own profile: who they are, what they saved, and how the last
-// month looked. Settings live behind the gear in the navbar, this page is
-// only for looking at.
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref, computed, onMounted } from 'vue'
 import { supabase } from '@/lib/supabase'
@@ -11,9 +11,17 @@ import { useLanguageStore } from '@/stores/language'
 import { findMoodById } from '@/lib/moods'
 import { moodBreakdown, totalSaved, topMood, DEFAULT_DAYS } from '@/lib/stats'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const auth = useAuthStore()
 const profile = useProfileStore()
 const lang = useLanguageStore()
+
+// ===================================================================
+// STATE
+// ===================================================================
 
 const savedPlaylists = ref([])
 const followers = ref(0)
@@ -23,20 +31,24 @@ const loading = ref(true)
 const loadError = ref('')
 const privacyError = ref('')
 
-// The playlist we are currently switching, so only its own toggle greys out
 const changingId = ref(null)
 
-// The month overview, worked out from the playlists in the list above
+// ===================================================================
+// COMPUTED STATS
+// ===================================================================
+
 const breakdown = computed(() => moodBreakdown(savedPlaylists.value, DEFAULT_DAYS))
 const monthTotal = computed(() => totalSaved(breakdown.value))
 const monthTop = computed(() => topMood(breakdown.value))
 
-// The widest bar fills the row, the rest are drawn relative to it. Using the
-// biggest count rather than the total keeps a lonely mood from being a sliver.
 const biggestCount = computed(() => {
   if (!breakdown.value.length) return 0
   return breakdown.value[0].count
 })
+
+// ===================================================================
+// HELPER FUNCTIONS
+// ===================================================================
 
 function barWidth(row) {
   if (!biggestCount.value) return '0%'
@@ -56,8 +68,6 @@ function formatDate(text) {
   })
 }
 
-// The name and picture come from the profiles table when we have it, the
-// same way the navbar picks them, so the two never disagree
 function displayName() {
   if (profile.profile && profile.profile.full_name) {
     return profile.profile.full_name
@@ -74,11 +84,13 @@ function avatarUrl() {
   return ''
 }
 
+// ===================================================================
+// LIFECYCLE
+// ===================================================================
+
 onMounted(async () => {
   const userId = auth.user.id
 
-  // Three questions at once, they do not depend on each other.
-  // head: true with count asks the database to count without sending rows.
   const [playlistResult, followerResult, followingResult] = await Promise.all([
     supabase
       .from('playlists')
@@ -110,7 +122,10 @@ onMounted(async () => {
   loading.value = false
 })
 
-// Publish a playlist on the profile, or take it back off again
+// ===================================================================
+// ACTIONS
+// ===================================================================
+
 async function togglePublic(playlist) {
   changingId.value = playlist.id
   privacyError.value = ''
@@ -125,7 +140,6 @@ async function togglePublic(playlist) {
   if (result.error) {
     privacyError.value = lang.t('profile.privacyError')
   } else {
-    // Only touch the row we changed, the rest of the list stays as it is
     playlist.is_public = wanted
   }
 

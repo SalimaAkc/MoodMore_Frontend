@@ -1,5 +1,7 @@
 <script setup>
-// Shows all the playlists the user saved
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref, onMounted } from 'vue'
 import { supabase } from '@/lib/supabase'
@@ -9,26 +11,32 @@ import { usePlaylistsStore } from '@/stores/playlists'
 import { findMoodById, FAVORITES_MOOD } from '@/lib/moods'
 import { useLanguageStore } from '@/stores/language'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const auth = useAuthStore()
 const favorites = useFavoritesStore()
 const playlists = usePlaylistsStore()
 const lang = useLanguageStore()
 
-// The rows on this page. Named apart from the playlists store above, which
-// only holds the short list the + button on a track uses.
+// ===================================================================
+// STATE
+// ===================================================================
+
 const savedPlaylists = ref([])
 const loading = ref(true)
 const deletingId = ref(null)
 
-// loadError replaces the list, deleteError shows above it
 const loadError = ref('')
 const deleteError = ref('')
 
-// Turn the database date into something readable
+// ===================================================================
+// HELPER FUNCTIONS
+// ===================================================================
+
 function formatDate(text) {
   const date = new Date(text)
-
-  // The chosen language decides how the date is written
   return date.toLocaleDateString(lang.current, {
     day: 'numeric',
     month: 'short',
@@ -36,8 +44,16 @@ function formatDate(text) {
   })
 }
 
+function songCount(playlist) {
+  if (!playlist.songs) return 0
+  return playlist.songs.length
+}
+
+// ===================================================================
+// LIFECYCLE
+// ===================================================================
+
 onMounted(async () => {
-  // The songs are inside the playlist row, so one request gets everything
   const result = await supabase
     .from('playlists')
     .select('id, name, mood_id, created_at, songs')
@@ -53,13 +69,10 @@ onMounted(async () => {
   loading.value = false
 })
 
-// How many tracks a playlist has
-function songCount(playlist) {
-  if (!playlist.songs) return 0
-  return playlist.songs.length
-}
+// ===================================================================
+// ACTIONS
+// ===================================================================
 
-// Delete a playlist, asking first because it cannot be undone
 async function remove(playlist) {
   const question = lang.t('collection.confirmDelete', { name: playlist.name })
   if (!window.confirm(question)) return
@@ -67,7 +80,6 @@ async function remove(playlist) {
   deletingId.value = playlist.id
   deleteError.value = ''
 
-  // The songs live inside this row, so they are deleted with it
   const result = await supabase.from('playlists').delete().eq('id', playlist.id)
 
   if (result.error) {
@@ -75,12 +87,10 @@ async function remove(playlist) {
   } else {
     savedPlaylists.value = savedPlaylists.value.filter(item => item.id !== playlist.id)
 
-    // That row is gone, so the favourites store must forget it
     if (playlist.mood_id === FAVORITES_MOOD.id) {
       favorites.reset()
     }
 
-    // The menu behind the + on a track still lists it, so make it load again
     playlists.reset()
   }
 

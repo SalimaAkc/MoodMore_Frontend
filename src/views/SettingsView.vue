@@ -1,5 +1,7 @@
 <script setup>
-// Settings page
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -9,11 +11,19 @@ import { useProfileStore } from '@/stores/profile'
 import { useLanguageStore } from '@/stores/language'
 import { LANGUAGES } from '@/lib/translations'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const settings = useSettingsStore()
 const auth = useAuthStore()
 const profileStore = useProfileStore()
 const lang = useLanguageStore()
 const router = useRouter()
+
+// ===================================================================
+// STATE - PROFILE
+// ===================================================================
 
 const editName = ref('')
 const avatarUrl = ref('')
@@ -21,9 +31,10 @@ const saving = ref(false)
 const uploading = ref(false)
 const savedMessage = ref('')
 
-// Each of the three below asks for the password that is in use now. A login
-// token says which account this is, not who is holding the keyboard, and all
-// three of these are things you cannot take back.
+// ===================================================================
+// STATE - PASSWORD
+// ===================================================================
+
 const currentPassword = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
@@ -31,18 +42,29 @@ const passwordError = ref('')
 const passwordMessage = ref('')
 const changingPassword = ref(false)
 
+// ===================================================================
+// STATE - EMAIL
+// ===================================================================
+
 const emailPassword = ref('')
 const newEmail = ref('')
 const emailError = ref('')
 const emailMessage = ref('')
 const changingEmail = ref(false)
 
+// ===================================================================
+// STATE - DELETE ACCOUNT
+// ===================================================================
+
 const deletePassword = ref('')
 const confirmingDelete = ref(false)
 const deleting = ref(false)
 const deleteError = ref('')
 
-// Copy the loaded profile into the form fields
+// ===================================================================
+// PROFILE MANAGEMENT
+// ===================================================================
+
 function fillForm() {
   if (!profileStore.profile) return
 
@@ -50,16 +72,11 @@ function fillForm() {
   avatarUrl.value = profileStore.profile.avatar_url || ''
 }
 
-onMounted(fillForm)
-watch(() => profileStore.profile, fillForm)
-
-// The first letter, shown when there is no picture yet
 function initial() {
   const name = editName.value || auth.user.email
   return name.charAt(0).toUpperCase()
 }
 
-// Upload the chosen file and show it straight away
 async function pickPicture(event) {
   const file = event.target.files[0]
   if (!file) return
@@ -76,7 +93,6 @@ async function pickPicture(event) {
   uploading.value = false
 }
 
-// Save the name and picture to the database
 async function saveProfile() {
   saving.value = true
   savedMessage.value = ''
@@ -90,7 +106,17 @@ async function saveProfile() {
   saving.value = false
 }
 
-// Give the account a new password
+// ===================================================================
+// LIFECYCLE
+// ===================================================================
+
+onMounted(fillForm)
+watch(() => profileStore.profile, fillForm)
+
+// ===================================================================
+// PASSWORD MANAGEMENT
+// ===================================================================
+
 async function changePassword() {
   passwordError.value = ''
   passwordMessage.value = ''
@@ -113,8 +139,6 @@ async function changePassword() {
   changingPassword.value = true
 
   try {
-    // Without this, anyone who walked up to an unlocked screen could set a
-    // new password and shut the real owner out of their own account
     const confirmed = await auth.reauthenticate(currentPassword.value)
 
     if (!confirmed) {
@@ -135,7 +159,10 @@ async function changePassword() {
   }
 }
 
-// Ask Supabase to change the email address
+// ===================================================================
+// EMAIL MANAGEMENT
+// ===================================================================
+
 async function changeEmail() {
   emailError.value = ''
   emailMessage.value = ''
@@ -155,8 +182,6 @@ async function changeEmail() {
   changingEmail.value = true
 
   try {
-    // The email address is how you get back in when you forget the password,
-    // so handing it to somebody else hands them the whole account
     const confirmed = await auth.reauthenticate(emailPassword.value)
 
     if (!confirmed) {
@@ -176,9 +201,10 @@ async function changeEmail() {
   }
 }
 
-// Open the panel that asks for the password. A window.confirm used to be
-// enough here, but one click is a thin thing to stand between somebody and
-// losing everything they saved.
+// ===================================================================
+// ACCOUNT DELETION
+// ===================================================================
+
 function askToDelete() {
   confirmingDelete.value = true
   deletePassword.value = ''
@@ -191,7 +217,6 @@ function cancelDelete() {
   deleteError.value = ''
 }
 
-// Delete the account for good
 async function removeAccount() {
   if (!deletePassword.value) {
     deleteError.value = lang.t('settings.passwordNeeded')
@@ -202,8 +227,6 @@ async function removeAccount() {
   deleteError.value = ''
 
   try {
-    // Checked here so a wrong password never leaves the browser, and checked
-    // again by the server, which is where it actually counts
     const confirmed = await auth.reauthenticate(deletePassword.value)
 
     if (!confirmed) {
@@ -220,7 +243,10 @@ async function removeAccount() {
   }
 }
 
-// Log out and go back to the home page
+// ===================================================================
+// LOGOUT
+// ===================================================================
+
 async function logout() {
   await auth.signOut()
   router.push('/')

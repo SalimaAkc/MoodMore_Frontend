@@ -1,5 +1,7 @@
 <script setup>
-// Shows the results for whatever was typed in the navbar search box
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -8,21 +10,31 @@ import { usePlayerStore } from '@/stores/player'
 import { useLanguageStore } from '@/stores/language'
 import TrackList from '@/components/TrackList.vue'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const route = useRoute()
 const player = usePlayerStore()
 const lang = useLanguageStore()
+
+// ===================================================================
+// STATE
+// ===================================================================
 
 const tracks = ref([])
 const loading = ref(false)
 const errorMessage = ref('')
 const searchWords = ref('')
 
-// Needed to ask for the next 50 results
 const nextPageToken = ref(null)
 const loadingMore = ref(false)
 const moreError = ref('')
 
-// Ask the backend for the results
+// ===================================================================
+// SEARCH
+// ===================================================================
+
 async function search(words) {
   searchWords.value = words
   nextPageToken.value = null
@@ -49,7 +61,10 @@ async function search(words) {
   }
 }
 
-// Fetch the next page and put it under the results we already have
+// ===================================================================
+// PAGINATION
+// ===================================================================
+
 async function loadMore() {
   loadingMore.value = true
   moreError.value = ''
@@ -63,14 +78,16 @@ async function loadMore() {
     tracks.value = tracks.value.concat(data.tracks)
     nextPageToken.value = data.nextPageToken
   } catch (error) {
-    // Not errorMessage, that would hide the results we already have
     moreError.value = error.message
   } finally {
     loadingMore.value = false
   }
 }
 
-// Watch the ?q= part of the address and search again when it changes
+// ===================================================================
+// WATCHERS
+// ===================================================================
+
 watch(() => route.query.q, (newWords) => {
   search(newWords || '')
 }, { immediate: true })

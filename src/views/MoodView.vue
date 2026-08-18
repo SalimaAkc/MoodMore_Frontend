@@ -1,5 +1,7 @@
 <script setup>
-// Shows the tracks for one mood and lets you save them to your collection
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -12,6 +14,10 @@ import { usePlaylistsStore } from '@/stores/playlists'
 import { useLanguageStore } from '@/stores/language'
 import TrackList from '@/components/TrackList.vue'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
@@ -19,14 +25,16 @@ const player = usePlayerStore()
 const playlists = usePlaylistsStore()
 const lang = useLanguageStore()
 
-// The mood name comes from the address, for example /mood/Calm
+// ===================================================================
+// MOOD & STATE
+// ===================================================================
+
 const mood = findMood(route.params.name)
 
 const tracks = ref([])
 const loading = ref(true)
 const errorMessage = ref('')
 
-// Needed to load page 2 of the same playlist
 const nextPageToken = ref(null)
 const usedQuery = ref('')
 const loadingMore = ref(false)
@@ -35,8 +43,11 @@ const saving = ref(false)
 const saved = ref(false)
 const saveError = ref('')
 
+// ===================================================================
+// LIFECYCLE
+// ===================================================================
+
 onMounted(async () => {
-  // Somebody typed a mood that does not exist, like /mood/Banana
   if (!mood) {
     router.push('/')
     return
@@ -55,13 +66,15 @@ onMounted(async () => {
   }
 })
 
-// Load the next page of tracks and add it to the list
+// ===================================================================
+// TRACK LOADING
+// ===================================================================
+
 async function loadMore() {
   loadingMore.value = true
   saveError.value = ''
 
   try {
-    // Send the same query back so page 2 belongs to the same playlist
     const data = await getFromApi('/api/playlist/' + mood.name, {
       query: usedQuery.value,
       pageToken: nextPageToken.value
@@ -70,14 +83,16 @@ async function loadMore() {
     tracks.value = tracks.value.concat(data.tracks)
     nextPageToken.value = data.nextPageToken
   } catch (error) {
-    // Not errorMessage, that would hide the tracks we already have
     saveError.value = error.message
   } finally {
     loadingMore.value = false
   }
 }
 
-// Save the whole list as a new playlist
+// ===================================================================
+// SAVE PLAYLIST
+// ===================================================================
+
 async function saveToCollection() {
   if (!auth.user) {
     router.push('/login')
@@ -87,7 +102,6 @@ async function saveToCollection() {
   saving.value = true
   saveError.value = ''
 
-  // The name is stored, so it keeps whatever language it was saved in
   const playlistName = lang.t('mood.playlistName', {
     mood: lang.t('moodName.' + mood.id)
   })
@@ -103,8 +117,6 @@ async function saveToCollection() {
     saveError.value = lang.t('mood.saveError')
   } else {
     saved.value = true
-
-    // The menu behind the + on a track should offer this new playlist too
     playlists.reset()
   }
 
