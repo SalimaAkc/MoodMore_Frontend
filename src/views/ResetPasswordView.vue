@@ -1,6 +1,7 @@
 <script setup>
-// Where the link from the reset email lands. Opening that link gives the
-// browser a short lived session, so here we only have to set the password.
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -8,9 +9,17 @@ import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/auth'
 import { useLanguageStore } from '@/stores/language'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const auth = useAuthStore()
 const lang = useLanguageStore()
 const router = useRouter()
+
+// ===================================================================
+// STATE
+// ===================================================================
 
 const checking = ref(true)
 const hasSession = ref(false)
@@ -21,22 +30,25 @@ const errorMessage = ref('')
 const saving = ref(false)
 const done = ref(false)
 
-onMounted(async () => {
-  // The client reads the token out of the address by itself, we only ask
-  // whether that worked
-  const result = await supabase.auth.getSession()
+// ===================================================================
+// LIFECYCLE
+// ===================================================================
 
+onMounted(async () => {
+  const result = await supabase.auth.getSession()
   hasSession.value = Boolean(result.data.session)
   checking.value = false
 })
 
-// The session can also turn up a moment later, through the listener in the
-// auth store, so watch for that instead of deciding once and for all
 watch(() => auth.user, (user) => {
   if (user) {
     hasSession.value = true
   }
 })
+
+// ===================================================================
+// ACTIONS
+// ===================================================================
 
 async function savePassword() {
   errorMessage.value = ''
@@ -57,7 +69,6 @@ async function savePassword() {
     await auth.updatePassword(newPassword.value)
     done.value = true
 
-    // Straight into the app, the reset link already logged them in
     setTimeout(() => router.push('/'), 1500)
   } catch (error) {
     errorMessage.value = error.message || lang.t('settings.passwordError')
@@ -68,12 +79,16 @@ async function savePassword() {
 </script>
 
 <template>
+  <!-- =================================================================
+       PAGE - Password reset
+       ================================================================= -->
   <div class="page">
+    <!-- LOADING -->
     <div v-if="checking" class="card">
       <p class="empty-message">{{ lang.t('common.loading') }}</p>
     </div>
 
-    <!-- Opened without a working link, or the link was already used -->
+    <!-- EXPIRED OR INVALID LINK -->
     <div v-else-if="!hasSession" class="card">
       <h1>{{ lang.t('reset.expiredTitle') }}</h1>
       <p class="subtitle">{{ lang.t('reset.expiredBody') }}</p>
@@ -81,11 +96,13 @@ async function savePassword() {
       <RouterLink to="/forgot-password" class="btn">{{ lang.t('reset.askAgain') }}</RouterLink>
     </div>
 
+    <!-- SUCCESS -->
     <div v-else-if="done" class="card">
       <h1>{{ lang.t('reset.doneTitle') }}</h1>
       <p class="subtitle">{{ lang.t('reset.doneBody') }}</p>
     </div>
 
+    <!-- PASSWORD RESET FORM -->
     <form v-else class="card" @submit.prevent="savePassword">
       <h1>{{ lang.t('reset.title') }}</h1>
       <p class="subtitle">{{ lang.t('reset.subtitle') }}</p>
@@ -110,11 +127,19 @@ async function savePassword() {
 </template>
 
 <style scoped>
+/* ===================================================================
+   PAGE - Layout
+   =================================================================== */
+
 .page {
   display: flex;
   justify-content: center;
   padding: 60px 20px;
 }
+
+/* ===================================================================
+   CARD - Form container
+   =================================================================== */
 
 .card {
   display: flex;
@@ -140,6 +165,10 @@ h1 {
   text-align: center;
   margin-top: -10px;
 }
+
+/* ===================================================================
+   FORM ELEMENTS
+   =================================================================== */
 
 label {
   display: flex;

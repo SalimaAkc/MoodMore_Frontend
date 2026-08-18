@@ -1,17 +1,31 @@
 <script setup>
-// Asks for an email address and sends the reset link to it
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useLanguageStore } from '@/stores/language'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const auth = useAuthStore()
 const lang = useLanguageStore()
+
+// ===================================================================
+// STATE
+// ===================================================================
 
 const email = ref('')
 const loading = ref(false)
 const sent = ref(false)
 const errorMessage = ref('')
+
+// ===================================================================
+// ACTIONS
+// ===================================================================
 
 async function sendLink() {
   errorMessage.value = ''
@@ -19,9 +33,6 @@ async function sendLink() {
 
   try {
     await auth.sendPasswordReset(email.value.trim())
-
-    // Always the same answer, whether or not that address has an account.
-    // Saying "no such account" would tell a stranger who is a member here.
     sent.value = true
   } catch (error) {
     errorMessage.value = lang.t('forgot.error')
@@ -32,7 +43,11 @@ async function sendLink() {
 </script>
 
 <template>
+  <!-- =================================================================
+       PAGE - Password reset request
+       ================================================================= -->
   <div class="page">
+    <!-- SUCCESS SCREEN -->
     <div v-if="sent" class="card">
       <h1>{{ lang.t('forgot.sentTitle') }}</h1>
       <p class="subtitle">{{ lang.t('forgot.sentBody') }}</p>
@@ -42,6 +57,7 @@ async function sendLink() {
       </p>
     </div>
 
+    <!-- FORM SCREEN -->
     <form v-else class="card" @submit.prevent="sendLink">
       <h1>{{ lang.t('forgot.title') }}</h1>
       <p class="subtitle">{{ lang.t('forgot.subtitle') }}</p>
@@ -65,11 +81,19 @@ async function sendLink() {
 </template>
 
 <style scoped>
+/* ===================================================================
+   PAGE - Layout
+   =================================================================== */
+
 .page {
   display: flex;
   justify-content: center;
   padding: 60px 20px;
 }
+
+/* ===================================================================
+   CARD - Form container
+   =================================================================== */
 
 .card {
   display: flex;
@@ -96,6 +120,10 @@ h1 {
   margin-top: -10px;
 }
 
+/* ===================================================================
+   FORM ELEMENTS
+   =================================================================== */
+
 label {
   display: flex;
   flex-direction: column;
@@ -119,6 +147,10 @@ input {
 input:focus {
   border-color: var(--orange);
 }
+
+/* ===================================================================
+   LINKS
+   =================================================================== */
 
 .bottom {
   text-align: center;
