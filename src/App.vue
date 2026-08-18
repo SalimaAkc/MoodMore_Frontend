@@ -97,6 +97,7 @@ async function logout() {
     </form>
 
     <div class="links">
+      <RouterLink to="/users" class="link" :title="lang.t('users.title')">👤</RouterLink>
       <RouterLink to="/settings" class="link" :title="lang.t('nav.settings')">⚙</RouterLink>
 
       <template v-if="auth.user">

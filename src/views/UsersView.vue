@@ -92,17 +92,20 @@ function isFollowing(userId) {
     <p class="subtitle">{{ lang.t('users.subtitle') }}</p>
 
     <!-- SEARCH BOX -->
-    <div class="search-box">
-      <input
-        v-model="searchQuery"
-        type="text"
-        :placeholder="lang.t('users.searchPlaceholder')"
-        maxlength="100"
-        @keydown.enter="searchUsers"
-      />
-      <button class="btn" @click="searchUsers" :disabled="loading">
-        {{ loading ? lang.t('common.loading') : lang.t('users.search') }}
-      </button>
+    <div class="search-container">
+      <div class="person-icon">👤</div>
+      <div class="search-box">
+        <input
+          v-model="searchQuery"
+          type="text"
+          :placeholder="lang.t('users.searchPlaceholder')"
+          maxlength="100"
+          @keydown.enter="searchUsers"
+        />
+        <button class="btn" @click="searchUsers" :disabled="loading">
+          {{ loading ? lang.t('common.loading') : lang.t('users.search') }}
+        </button>
+      </div>
     </div>
 
     <!-- ERRORS -->
@@ -173,13 +176,33 @@ h1 {
 }
 
 /* ===================================================================
-   SEARCH BOX
+   SEARCH CONTAINER & BOX
    =================================================================== */
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.person-icon {
+  font-size: 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: var(--card);
+  border: 2px solid var(--orange);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
 
 .search-box {
   display: flex;
   gap: 12px;
-  margin-bottom: 32px;
+  flex: 1;
 }
 
 .search-box input {
@@ -318,6 +341,17 @@ h1 {
 }
 
 @media (max-width: 600px) {
+  .search-container {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .person-icon {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+
   .search-box {
     flex-direction: column;
   }
