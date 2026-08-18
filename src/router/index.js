@@ -20,6 +20,8 @@ import CollectionView from '@/views/CollectionView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import PlaylistView from '@/views/PlaylistView.vue'
 import SettingsView from '@/views/SettingsView.vue'
+import UsersView from '@/views/UsersView.vue'
+import UserProfileView from '@/views/UserProfileView.vue'
 
 // ===================================================================
 // ROUTE DEFINITIONS
@@ -30,6 +32,8 @@ const routes = [
   { path: '/', component: HomeView },
   { path: '/mood/:name', component: MoodView },
   { path: '/search', component: SearchView },
+  { path: '/users', component: UsersView },
+  { path: '/user/:id', component: UserProfileView },
 
   // auth pages (no login needed)
   { path: '/login', component: LoginView },

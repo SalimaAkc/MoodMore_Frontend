@@ -61,7 +61,29 @@ export async function getFromApi(path, params = {}) {
   return readAnswer(response)
 }
 
-// DELETE request
+// POST request (with authentication)
+export async function postToApi(path, token, body = {}) {
+  const options = {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  }
+
+  let response
+
+  try {
+    response = await fetch(API_URL + path, options)
+  } catch (error) {
+    throw new Error('Cannot reach the server. Is the backend running?')
+  }
+
+  return readAnswer(response)
+}
+
+// DELETE request (with authentication)
 export async function deleteFromApi(path, token, body) {
   const options = {
     method: 'DELETE',
