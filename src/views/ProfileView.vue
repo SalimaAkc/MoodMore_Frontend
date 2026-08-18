@@ -94,7 +94,7 @@ onMounted(async () => {
   const [playlistResult, followerResult, followingResult] = await Promise.all([
     supabase
       .from('playlists')
-      .select('id, name, mood_id, created_at, songs, is_public')
+      .select('id, name, mood_id, created_at, songs')
       .eq('user_id', userId)
       .order('created_at', { ascending: false }),
 
@@ -112,7 +112,10 @@ onMounted(async () => {
   if (playlistResult.error) {
     loadError.value = lang.t('profile.loadError')
   } else {
-    savedPlaylists.value = playlistResult.data
+    savedPlaylists.value = playlistResult.data.map(playlist => ({
+      ...playlist,
+      is_public: playlist.is_public !== false
+    }))
   }
 
   // A missing count is shown as nothing rather than as a wrong number
