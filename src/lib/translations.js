@@ -126,6 +126,20 @@ export const TRANSLATIONS = {
     'profile.privacyError': 'Could not change that. Try again.',
     'profile.loadError': 'Could not load your profile.',
 
+    'users.title': 'Find users',
+    'users.subtitle': 'Search for other people and follow them.',
+    'users.searchPlaceholder': 'Search by name or email…',
+    'users.search': 'Search',
+    'users.typeToSearch': 'Type a name to find people.',
+    'users.noResults': 'Nobody found. Try another name.',
+    'users.follow': 'Follow',
+    'users.unfollow': 'Following',
+
+    'user.notFound': 'This user does not exist.',
+    'user.loadError': 'Could not load this user.',
+    'user.publicPlaylists': 'Public playlists',
+    'user.noPublicPlaylists': 'This user has not shared any playlists yet.',
+
     'playlist.label': 'SAVED PLAYLIST',
     'playlist.editing': 'EDITING',
     'playlist.edit': 'Edit',
