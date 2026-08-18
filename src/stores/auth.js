@@ -1,4 +1,6 @@
-// keep track of who's logged in
+// ===================================================================
+// AUTHENTICATION STORE - User login & account management
+// ===================================================================
 
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -6,9 +8,17 @@ import { supabase } from '@/lib/supabase'
 import { deleteFromApi } from '@/lib/api'
 
 export const useAuthStore = defineStore('auth', () => {
+  // ===================================================================
+  // STATE
+  // ===================================================================
+
   const user = ref(null)
 
-  // watch for login/logout (works even in other tabs)
+  // ===================================================================
+  // AUTH STATE MONITORING
+  // ===================================================================
+
+  // listen for login/logout events
   supabase.auth.onAuthStateChange((event, session) => {
     if (session) {
       user.value = session.user
@@ -17,7 +27,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
   })
 
-  // load user when app starts
+  // ===================================================================
+  // INITIALIZATION
+  // ===================================================================
+
   async function loadUser() {
     const result = await supabase.auth.getSession()
 
@@ -28,7 +41,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // make a new account
+  // ===================================================================
+  // AUTHENTICATION ACTIONS
+  // ===================================================================
+
   async function signUp(email, password, name) {
     const result = await supabase.auth.signUp({
       email: email,
@@ -43,7 +59,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // log in
   async function signIn(email, password) {
     const result = await supabase.auth.signInWithPassword({
       email: email,
@@ -55,13 +70,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // log out
   async function signOut() {
     await supabase.auth.signOut()
     user.value = null
   }
 
-  // check the password is right (for before doing dangerous stuff)
+  // ===================================================================
+  // PASSWORD & EMAIL MANAGEMENT
+  // ===================================================================
+
   async function reauthenticate(password) {
     if (!user.value) return false
 
@@ -73,7 +90,6 @@ export const useAuthStore = defineStore('auth', () => {
     return !result.error
   }
 
-  // send a password reset email
   async function sendPasswordReset(email) {
     const result = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: window.location.origin + '/reset-password'
@@ -84,7 +100,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // change password
   async function updatePassword(newPassword) {
     const result = await supabase.auth.updateUser({ password: newPassword })
 
@@ -93,7 +108,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // change email (user has to confirm from new email)
   async function updateEmail(newEmail) {
     const result = await supabase.auth.updateUser({ email: newEmail })
 
@@ -102,7 +116,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // delete account (backend checks password)
+  // ===================================================================
+  // ACCOUNT DELETION
+  // ===================================================================
+
   async function deleteAccount(password) {
     const sessionResult = await supabase.auth.getSession()
 
@@ -118,7 +135,10 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
   }
 
-  // get the name to show in navbar
+  // ===================================================================
+  // DISPLAY HELPERS
+  // ===================================================================
+
   function displayName() {
     if (!user.value) return ''
 

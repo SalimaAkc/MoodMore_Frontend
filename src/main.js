@@ -1,4 +1,6 @@
-// start the Vue app
+// ===================================================================
+// MAIN APP ENTRY POINT
+// ===================================================================
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -8,14 +10,24 @@ import router from './router'
 import { useAuthStore } from './stores/auth'
 import './assets/main.css'
 
+// ===================================================================
+// APP INITIALIZATION
+// ===================================================================
+
 const app = createApp(App)
 
+// setup store management
 app.use(createPinia())
 
-// check if user is logged in first, so router waits
+// ===================================================================
+// AUTHENTICATION CHECK
+// ===================================================================
+
+// load user before routing starts
 const auth = useAuthStore()
 
 auth.loadUser().finally(() => {
+  // setup router after user is loaded
   app.use(router)
   app.mount('#app')
 })

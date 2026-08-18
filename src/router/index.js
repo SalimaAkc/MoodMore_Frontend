@@ -1,7 +1,13 @@
-// app pages and routes
+// ===================================================================
+// ROUTER - PAGE NAVIGATION
+// ===================================================================
 
 import { createWebHistory, createRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+
+// ===================================================================
+// PAGE IMPORTS
+// ===================================================================
 
 import HomeView from '@/views/HomeView.vue'
 import MoodView from '@/views/MoodView.vue'
@@ -15,44 +21,55 @@ import ProfileView from '@/views/ProfileView.vue'
 import PlaylistView from '@/views/PlaylistView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 
+// ===================================================================
+// ROUTE DEFINITIONS
+// ===================================================================
+
 const routes = [
+  // public pages (no login required)
   { path: '/', component: HomeView },
   { path: '/mood/:name', component: MoodView },
   { path: '/search', component: SearchView },
+
+  // auth pages (no login needed)
   { path: '/login', component: LoginView },
   { path: '/signup', component: SignupView },
-
-  // no login needed for these (the link in email proves who you are)
   { path: '/forgot-password', component: ForgotPasswordView },
   { path: '/reset-password', component: ResetPasswordView },
 
-  // settings are stored in this browser only
+  // settings (browser storage only)
   { path: '/settings', component: SettingsView },
 
-  // these pages need to be logged in
+  // protected pages (login required)
   { path: '/profile', component: ProfileView, meta: { needsLogin: true } },
   { path: '/collection', component: CollectionView, meta: { needsLogin: true } },
   { path: '/playlist/:id', component: PlaylistView, meta: { needsLogin: true } },
 
-  // anything else goes home
+  // catch-all
   { path: '/:notFound(.*)', redirect: '/' }
 ]
+
+// ===================================================================
+// ROUTER CONFIGURATION
+// ===================================================================
 
 const router = createRouter({
   history: createWebHistory(),
   routes: routes,
 
-  // scroll to top on new page
   scrollBehavior() {
     return { top: 0 }
   }
 })
 
-// check before changing pages
+// ===================================================================
+// ROUTE GUARDS
+// ===================================================================
+
+// check login before navigating
 router.beforeEach((to) => {
   const auth = useAuthStore()
 
-  // if page needs login, send to login first
   if (to.meta.needsLogin && !auth.user) {
     return {
       path: '/login',
