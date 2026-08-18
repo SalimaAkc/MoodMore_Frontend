@@ -1,5 +1,7 @@
 <script setup>
-// Shows a list of tracks, used by the mood, search and playlist pages
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref, nextTick } from 'vue'
 import { usePlayerStore } from '@/stores/player'
@@ -8,21 +10,26 @@ import { useFavoritesStore } from '@/stores/favorites'
 import { usePlaylistsStore } from '@/stores/playlists'
 import { useLanguageStore } from '@/stores/language'
 
-// The tracks come from the page that uses this component
+// ===================================================================
+// PROPS & EMITS
+// ===================================================================
+
 const props = defineProps({
   tracks: {
     type: Array,
     required: true
   },
-  // In editing mode the rows do not play and get a remove button
   editing: {
     type: Boolean,
     default: false
   }
 })
 
-// We tell the page instead of removing here, so it can still be cancelled
 const emit = defineEmits(['remove'])
+
+// ===================================================================
+// STORE SETUP
+// ===================================================================
 
 const player = usePlayerStore()
 const auth = useAuthStore()
@@ -30,11 +37,13 @@ const favorites = useFavoritesStore()
 const playlists = usePlaylistsStore()
 const lang = useLanguageStore()
 
-// How wide the menu is and roughly how tall, used to keep it on screen
+// ===================================================================
+// STATE & CONFIGURATION
+// ===================================================================
+
 const MENU_WIDTH = 250
 const MENU_HEIGHT = 300
 
-// Null when the menu is closed, otherwise the track and where to draw it
 const menu = ref(null)
 const newName = ref('')
 const makingNew = ref(false)
@@ -42,6 +51,9 @@ const busy = ref(false)
 const notice = ref('')
 const nameInput = ref(null)
 
+// ===================================================================
+// PLAYLIST MENU
+// ===================================================================
 
 async function startNewPlaylist() {
   makingNew.value = true
@@ -53,40 +65,19 @@ async function startNewPlaylist() {
   }
 }
 
-// Start the list at the track that was clicked
-function playFrom(position) {
-  player.play(props.tracks, position)
-}
-
-// Check if this track is the one playing, used to colour the row
-function isPlaying(track) {
-  if (!track.videoId) return false
-  if (!player.currentTrack) return false
-
-  return player.currentTrack.videoId === track.videoId
-}
-
-// Add or remove this track from the favourites
-function toggleFavorite(track) {
-  favorites.toggle(track, auth.user.id)
-}
-
 function closeMenu() {
   menu.value = null
   makingNew.value = false
   newName.value = ''
 }
 
-
 function openMenu(event, track) {
   if (!auth.user) return
 
   const button = event.currentTarget.getBoundingClientRect()
 
-  
   const left = Math.max(8, button.right - MENU_WIDTH)
 
-  // Below the button normally, above it when there is no room left
   let top = button.bottom + 6
 
   if (top + MENU_HEIGHT > window.innerHeight) {
@@ -98,13 +89,15 @@ function openMenu(event, track) {
   newName.value = ''
   menu.value = { track: track, top: top, left: left }
 
-  // Only the first time, after that the store already has the list
   if (!playlists.loaded) {
     playlists.load(auth.user.id)
   }
 }
 
-// Say what happened, using the name of the playlist it went to
+// ===================================================================
+// PLAYLIST OPERATIONS
+// ===================================================================
+
 function reportResult(result, name) {
   if (result === 'added') {
     notice.value = lang.t('track.added', { name: name })
@@ -115,7 +108,6 @@ function reportResult(result, name) {
   }
 }
 
-// Put the track in a playlist that already exists
 async function addTo(playlist) {
   busy.value = true
 
@@ -126,7 +118,6 @@ async function addTo(playlist) {
   closeMenu()
 }
 
-// Make a new playlist holding just this track
 async function createAndAdd() {
   const name = newName.value.trim()
 
@@ -140,9 +131,31 @@ async function createAndAdd() {
   reportResult(result, name)
   closeMenu()
 }
+
+// ===================================================================
+// TRACK INTERACTIONS
+// ===================================================================
+
+function playFrom(position) {
+  player.play(props.tracks, position)
+}
+
+function isPlaying(track) {
+  if (!track.videoId) return false
+  if (!player.currentTrack) return false
+
+  return player.currentTrack.videoId === track.videoId
+}
+
+function toggleFavorite(track) {
+  favorites.toggle(track, auth.user.id)
+}
 </script>
 
 <template>
+  <!-- =================================================================
+       TRACK LIST - List of track rows
+       ================================================================= -->
   <div class="list">
     <div
       v-for="(track, position) in tracks"
@@ -163,7 +176,6 @@ async function createAndAdd() {
       <span class="duration">{{ track.duration }}</span>
 
       <div class="actions">
-        <!-- Editing mode shows a remove button instead of the heart -->
         <button
           v-if="editing"
           class="icon remove"
@@ -174,7 +186,6 @@ async function createAndAdd() {
           ✕
         </button>
 
-        
         <template v-else-if="auth.user">
           <button
             class="icon heart"
@@ -201,10 +212,15 @@ async function createAndAdd() {
     </div>
   </div>
 
+  <!-- =================================================================
+       MESSAGES - Notice and error messages
+       ================================================================= -->
   <p v-if="notice" class="notice">{{ notice }}</p>
   <p v-if="favorites.errorMessage" class="error-box">{{ favorites.errorMessage }}</p>
 
-  
+  <!-- =================================================================
+       PLAYLIST MENU - Add to playlist dropdown
+       ================================================================= -->
   <div v-if="menu" class="backdrop" @click="closeMenu"></div>
 
   <div
@@ -236,7 +252,6 @@ async function createAndAdd() {
         </p>
       </div>
 
-
       <form v-if="makingNew" class="menu-new" @submit.prevent="createAndAdd">
         <input
           ref="nameInput"
@@ -258,12 +273,19 @@ async function createAndAdd() {
 </template>
 
 <style scoped>
+/* ===================================================================
+   LIST - Track list container
+   =================================================================== */
+
 .list {
   display: flex;
   flex-direction: column;
 }
 
-/* Columns: number, thumbnail, title, duration, buttons */
+/* ===================================================================
+   ROW - Track row styling
+   =================================================================== */
+
 .row {
   display: grid;
   grid-template-columns: 32px 48px 1fr auto auto;
@@ -278,7 +300,6 @@ async function createAndAdd() {
   background: var(--card-2);
 }
 
-/* The track that is playing gets an orange tint */
 .row.active {
   background: var(--tint-orange);
 }
@@ -286,6 +307,14 @@ async function createAndAdd() {
 .row.active .title {
   color: var(--orange);
 }
+
+.row.editing {
+  cursor: default;
+}
+
+/* ===================================================================
+   TRACK INFO - Number, thumbnail, title, artist, duration
+   =================================================================== */
 
 .number {
   color: var(--ink-soft);
@@ -304,10 +333,9 @@ async function createAndAdd() {
 .info {
   display: flex;
   flex-direction: column;
-  min-width: 0; 
+  min-width: 0;
 }
 
-/* Cut off long text with ... instead of wrapping */
 .title,
 .artist {
   white-space: nowrap;
@@ -330,6 +358,9 @@ async function createAndAdd() {
   font-size: 0.85rem;
 }
 
+/* ===================================================================
+   ACTIONS - Heart and add buttons
+   =================================================================== */
 
 .actions {
   display: flex;
@@ -353,7 +384,6 @@ async function createAndAdd() {
   background: var(--tint-orange);
 }
 
-/* Already a favourite */
 .heart.on {
   color: var(--orange);
 }
@@ -362,15 +392,14 @@ async function createAndAdd() {
   font-size: 1.25rem;
 }
 
-/* While editing, rows are not clickable to play */
-.row.editing {
-  cursor: default;
-}
-
 .remove:hover {
   color: var(--red);
   background: var(--tint-red);
 }
+
+/* ===================================================================
+   MESSAGES - Notice and feedback
+   =================================================================== */
 
 .notice {
   color: var(--green);
@@ -378,6 +407,10 @@ async function createAndAdd() {
   font-weight: 600;
   padding: 12px 12px 0;
 }
+
+/* ===================================================================
+   MENU - Playlist dropdown
+   =================================================================== */
 
 .backdrop {
   position: fixed;
@@ -403,7 +436,6 @@ async function createAndAdd() {
   color: var(--ink-faint);
   padding: 6px 8px 8px;
 }
-
 
 .menu-list {
   max-height: 190px;
@@ -468,6 +500,10 @@ async function createAndAdd() {
 .menu-new input:focus {
   border-color: var(--orange);
 }
+
+/* ===================================================================
+   MOBILE RESPONSIVE
+   =================================================================== */
 
 @media (max-width: 600px) {
   .row {

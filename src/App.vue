@@ -1,5 +1,7 @@
 <script setup>
-// The frame around every page, navbar on top and player at the bottom
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -11,6 +13,10 @@ import { usePlaylistsStore } from '@/stores/playlists'
 import { useLanguageStore } from '@/stores/language'
 import BottomPlayer from '@/components/BottomPlayer.vue'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const auth = useAuthStore()
 const player = usePlayerStore()
 const favorites = useFavoritesStore()
@@ -19,11 +25,16 @@ const playlists = usePlaylistsStore()
 const lang = useLanguageStore()
 const router = useRouter()
 
+// ===================================================================
+// STATE
+// ===================================================================
+
 const searchText = ref('')
 
-// Load the favourites and the profile on login, forget them on logout.
-// The playlist list is not loaded here, the + button on a track fetches it
-// the first time somebody opens the menu.
+// ===================================================================
+// WATCHERS
+// ===================================================================
+
 watch(() => auth.user, (user) => {
   if (user) {
     favorites.load(user.id)
@@ -35,7 +46,10 @@ watch(() => auth.user, (user) => {
   }
 }, { immediate: true })
 
-// The name to show, from the profile table if we have it
+// ===================================================================
+// HELPER FUNCTIONS
+// ===================================================================
+
 function displayName() {
   if (profileStore.profile && profileStore.profile.full_name) {
     return profileStore.profile.full_name
@@ -44,7 +58,6 @@ function displayName() {
   return auth.displayName()
 }
 
-// The profile picture, or an empty string when there is none
 function avatarUrl() {
   if (profileStore.profile && profileStore.profile.avatar_url) {
     return profileStore.profile.avatar_url
@@ -53,7 +66,6 @@ function avatarUrl() {
   return ''
 }
 
-// Put the search in the address so the /search page can read it
 function doSearch() {
   const text = searchText.value.trim()
   if (!text) return
@@ -64,7 +76,6 @@ function doSearch() {
   })
 }
 
-// Log out and go back to the home page
 async function logout() {
   await auth.signOut()
   router.push('/')
@@ -72,6 +83,9 @@ async function logout() {
 </script>
 
 <template>
+  <!-- =================================================================
+       NAVBAR - Top navigation bar
+       ================================================================= -->
   <nav class="navbar">
     <RouterLink to="/" class="logo">
       <span class="logo-mark">M&amp;M</span>
@@ -85,7 +99,6 @@ async function logout() {
     <div class="links">
       <RouterLink to="/settings" class="link" :title="lang.t('nav.settings')">⚙</RouterLink>
 
-      <!-- Logged in -->
       <template v-if="auth.user">
         <RouterLink to="/collection" class="link">{{ lang.t('nav.collection') }}</RouterLink>
 
@@ -97,7 +110,6 @@ async function logout() {
         <button class="link logout" @click="logout">{{ lang.t('nav.logout') }}</button>
       </template>
 
-      <!-- Logged out -->
       <template v-else>
         <RouterLink to="/login" class="link">{{ lang.t('nav.login') }}</RouterLink>
         <RouterLink to="/signup" class="link signup">{{ lang.t('nav.signup') }}</RouterLink>
@@ -105,15 +117,24 @@ async function logout() {
     </div>
   </nav>
 
-  <!-- Extra space at the bottom so the player never covers the last track -->
+  <!-- =================================================================
+       PAGE CONTENT - Router view with player spacing
+       ================================================================= -->
   <main :style="{ paddingBottom: player.currentTrack ? '90px' : '0' }">
     <RouterView />
   </main>
 
+  <!-- =================================================================
+       PLAYER - Music player bar
+       ================================================================= -->
   <BottomPlayer />
 </template>
 
 <style scoped>
+/* ===================================================================
+   NAVBAR - Layout and spacing
+   =================================================================== */
+
 .navbar {
   display: flex;
   align-items: center;
@@ -122,12 +143,15 @@ async function logout() {
   padding: 0 32px;
   background: var(--paper);
   border-bottom: 1px solid var(--rule);
-  position: sticky; /* stays on screen while scrolling */
+  position: sticky;
   top: 0;
   z-index: 100;
 }
 
-/* The mark and the tagline stack, so the two read as one lockup */
+/* ===================================================================
+   LOGO - Branding area
+   =================================================================== */
+
 .logo {
   display: flex;
   flex-direction: column;
@@ -147,7 +171,6 @@ async function logout() {
   color: var(--orange);
 }
 
-/* Small and wide, so it sits under the mark without competing with it */
 .logo-tagline {
   font-size: 0.62rem;
   font-weight: 600;
@@ -155,6 +178,10 @@ async function logout() {
   text-transform: uppercase;
   color: var(--ink-faint);
 }
+
+/* ===================================================================
+   SEARCH - Search input field
+   =================================================================== */
 
 .search {
   flex: 1;
@@ -177,11 +204,15 @@ async function logout() {
   border-color: var(--orange);
 }
 
+/* ===================================================================
+   LINKS - Navigation items
+   =================================================================== */
+
 .links {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto; /* pushes this group to the right */
+  margin-left: auto;
 }
 
 .link {
@@ -200,7 +231,14 @@ async function logout() {
   background: var(--card-2);
 }
 
-/* The picture and name together link to the settings page */
+.logout {
+  color: var(--red);
+}
+
+/* ===================================================================
+   USER - Profile button
+   =================================================================== */
+
 .user {
   display: flex;
   align-items: center;
@@ -228,9 +266,9 @@ async function logout() {
   font-weight: 600;
 }
 
-.logout {
-  color: var(--red);
-}
+/* ===================================================================
+   SIGNUP BUTTON - Primary action button
+   =================================================================== */
 
 .signup {
   background: var(--orange);
@@ -243,6 +281,10 @@ async function logout() {
   background: var(--orange-dark);
   color: var(--on-accent);
 }
+
+/* ===================================================================
+   MOBILE RESPONSIVE
+   =================================================================== */
 
 @media (max-width: 700px) {
   .navbar {

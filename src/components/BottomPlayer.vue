@@ -1,27 +1,38 @@
 <script setup>
-// The player bar at the bottom, plays a hidden YouTube video
+// ===================================================================
+// IMPORTS
+// ===================================================================
 
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { usePlayerStore } from '@/stores/player'
 import { useSettingsStore } from '@/stores/settings'
 import { useLanguageStore } from '@/stores/language'
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 const player = usePlayerStore()
 const settings = useSettingsStore()
 const lang = useLanguageStore()
 
-// Not refs, Vue does not need to watch these
+// ===================================================================
+// STATE & CONFIGURATION
+// ===================================================================
+
 let youtubePlayer = null
 let isReady = false
 let timer = null
 
 const currentTime = ref('0:00')
-const progress = ref(0) // between 0 and 1, used for the bar width
+const progress = ref(0)
 
-// How far the arrow keys jump on the progress bar
 const SEEK_STEP = 5
 
-// Turn a number of seconds into a time like 4:13
+// ===================================================================
+// TIME FORMATTING
+// ===================================================================
+
 function formatTime(totalSeconds) {
   const minutes = Math.floor(totalSeconds / 60)
   const seconds = Math.floor(totalSeconds % 60)
@@ -30,7 +41,10 @@ function formatTime(totalSeconds) {
   return `${minutes}:${formattedSeconds}`
 }
 
-// Ask the player every half second how far it is
+// ===================================================================
+// TIMER MANAGEMENT
+// ===================================================================
+
 function startTimer() {
   stopTimer()
 
@@ -47,7 +61,6 @@ function startTimer() {
   }, 500)
 }
 
-// Stop asking
 function stopTimer() {
   if (timer) {
     clearInterval(timer)
@@ -56,23 +69,65 @@ function stopTimer() {
   timer = null
 }
 
-// Runs when the player finished loading
+// ===================================================================
+// YOUTUBE PLAYER SETUP
+// ===================================================================
+
 function onPlayerReady() {
   isReady = true
 
-  // A track can already be chosen before the player was ready
   if (player.currentTrack) {
     youtubePlayer.loadVideoById(player.currentTrack.videoId)
     startTimer()
   }
 }
 
+function createPlayer() {
+  youtubePlayer = new window.YT.Player('youtube-player', {
+    playerVars: {
+      autoplay: 1,
+      controls: 0
+    },
+    events: {
+      onReady: onPlayerReady,
+      onStateChange: onPlayerStateChange
+    }
+  })
+}
+
+// ===================================================================
+// LIFECYCLE HOOKS
+// ===================================================================
+
+onMounted(() => {
+  if (window.YT && window.YT.Player) {
+    createPlayer()
+    return
+  }
+
+  window.onYouTubeIframeAPIReady = createPlayer
+
+  const script = document.createElement('script')
+  script.src = 'https://www.youtube.com/iframe_api'
+  document.head.appendChild(script)
+})
+
+onUnmounted(() => {
+  stopTimer()
+
+  if (youtubePlayer) {
+    youtubePlayer.destroy()
+  }
+})
+
+// ===================================================================
+// TRACK PLAYBACK LOGIC
+// ===================================================================
 
 function replayCurrent() {
   youtubePlayer.seekTo(0, true)
   youtubePlayer.playVideo()
 }
-
 
 function onTrackEnded() {
   const onlyOne = player.queue.length === 1
@@ -95,7 +150,6 @@ function onTrackEnded() {
   player.isPlaying = false
 }
 
-// Runs when the video starts, pauses or ends
 function onPlayerStateChange(event) {
   const state = window.YT.PlayerState
 
@@ -108,48 +162,9 @@ function onPlayerStateChange(event) {
   }
 }
 
-// Create the YouTube player inside our hidden div
-function createPlayer() {
-  youtubePlayer = new window.YT.Player('youtube-player', {
-    playerVars: {
-      autoplay: 1,
-      controls: 0
-    },
-    events: {
-      onReady: onPlayerReady,
-      onStateChange: onPlayerStateChange
-    }
-  })
-}
-
-onMounted(() => {
-  // Use the YouTube script if it is already loaded
-  if (window.YT && window.YT.Player) {
-    createPlayer()
-    return
-  }
-
-  // Otherwise load it, YouTube calls this function when it is ready
-  window.onYouTubeIframeAPIReady = createPlayer
-
-  const script = document.createElement('script')
-  script.src = 'https://www.youtube.com/iframe_api'
-  document.head.appendChild(script)
-})
-
-onUnmounted(() => {
-  stopTimer()
-
-  if (youtubePlayer) {
-    youtubePlayer.destroy()
-  }
-})
-
-// Runs every time a different track is chosen
 watch(() => player.currentTrack, (track) => {
   if (!isReady) return
 
-  // The user closed the player, so stop the video too
   if (!track) {
     youtubePlayer.stopVideo()
     stopTimer()
@@ -162,7 +177,10 @@ watch(() => player.currentTrack, (track) => {
   startTimer()
 })
 
-// Play or pause with the middle button
+// ===================================================================
+// USER INTERACTIONS
+// ===================================================================
+
 function togglePlay() {
   if (!isReady) return
 
@@ -173,7 +191,6 @@ function togglePlay() {
   }
 }
 
-// Jump to the spot the user clicked on the progress bar
 function seek(event) {
   if (!isReady) return
 
@@ -184,7 +201,6 @@ function seek(event) {
   youtubePlayer.seekTo(newTime, true)
 }
 
-// The same bar with the arrow keys, for people who do not use a mouse
 function seekBy(seconds) {
   if (!isReady) return
 
@@ -193,11 +209,9 @@ function seekBy(seconds) {
 
   const wanted = youtubePlayer.getCurrentTime() + seconds
 
-  // Math.min and Math.max keep it inside the track
   youtubePlayer.seekTo(Math.max(0, Math.min(total, wanted)), true)
 }
 
-// What the screen reader reads out for the repeat button
 function repeatLabel() {
   if (player.repeat === 'one') return lang.t('player.repeatOne')
   if (player.repeat === 'all') return lang.t('player.repeatAll')
@@ -207,13 +221,19 @@ function repeatLabel() {
 </script>
 
 <template>
-
+  <!-- =================================================================
+       HIDDEN VIDEO - YouTube player container
+       ================================================================= -->
   <div class="video-hider">
     <div id="youtube-player"></div>
   </div>
 
+  <!-- =================================================================
+       PLAYER BAR - Controls and track info
+       ================================================================= -->
   <div v-if="player.currentTrack" class="player">
 
+    <!-- PROGRESS BAR -->
     <div
       class="progress"
       role="slider"
@@ -230,6 +250,7 @@ function repeatLabel() {
       <div class="progress-filled" :style="{ width: progress * 100 + '%' }"></div>
     </div>
 
+    <!-- CONTROLS -->
     <div class="controls">
       <img :src="player.currentTrack.thumbnail" alt="" class="thumb" />
 
@@ -277,7 +298,6 @@ function repeatLabel() {
           ⏭
         </button>
 
-        
         <button
           class="mode"
           :class="{ on: player.repeat !== 'off' }"
@@ -304,16 +324,24 @@ function repeatLabel() {
 </template>
 
 <style scoped>
+/* ===================================================================
+   VIDEO HIDER - Hidden YouTube player
+   =================================================================== */
+
 .video-hider {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 1px;
   height: 1px;
-  overflow: hidden; 
+  overflow: hidden;
   opacity: 0;
   pointer-events: none;
 }
+
+/* ===================================================================
+   PLAYER - Main player bar
+   =================================================================== */
 
 .player {
   position: fixed;
@@ -324,6 +352,10 @@ function repeatLabel() {
   border-top: 1px solid var(--rule);
   z-index: 200;
 }
+
+/* ===================================================================
+   PROGRESS BAR - Track progress slider
+   =================================================================== */
 
 .progress {
   height: 4px;
@@ -341,6 +373,10 @@ function repeatLabel() {
   background: var(--orange);
 }
 
+/* ===================================================================
+   CONTROLS - Main player controls area
+   =================================================================== */
+
 .controls {
   display: flex;
   align-items: center;
@@ -354,6 +390,10 @@ function repeatLabel() {
   object-fit: cover;
   border-radius: 4px;
 }
+
+/* ===================================================================
+   INFO - Track title and artist
+   =================================================================== */
 
 .info {
   display: flex;
@@ -378,6 +418,10 @@ function repeatLabel() {
   font-size: 0.8rem;
   color: var(--ink-soft);
 }
+
+/* ===================================================================
+   BUTTONS - Playback controls
+   =================================================================== */
 
 .buttons {
   display: flex;
@@ -404,7 +448,6 @@ function repeatLabel() {
   font-size: 1rem;
 }
 
-
 .mode {
   position: relative;
   font-size: 0.95rem;
@@ -430,6 +473,10 @@ function repeatLabel() {
   text-align: center;
 }
 
+/* ===================================================================
+   TIME & CLOSE - Time display and close button
+   =================================================================== */
+
 .time {
   color: var(--ink-soft);
   font-size: 0.8rem;
@@ -447,6 +494,10 @@ function repeatLabel() {
   color: var(--ink);
 }
 
+/* ===================================================================
+   MOBILE RESPONSIVE
+   =================================================================== */
+
 @media (max-width: 700px) {
   .controls {
     padding: 10px 12px;
@@ -455,7 +506,6 @@ function repeatLabel() {
   .time {
     display: none;
   }
-  
   .thumb {
     display: none;
   }
