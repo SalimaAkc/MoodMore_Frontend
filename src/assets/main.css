@@ -1,40 +1,47 @@
-/* Styles used everywhere in the app */
+/* ===================================================================
+   GLOBAL STYLES - Main app stylesheet
+   =================================================================== */
 
-/* Colours are set once here and used in every component */
+/* ===================================================================
+   CSS VARIABLES - Light mode colors
+   =================================================================== */
+
 :root {
-  /* Paper and ink */
-  --paper: #f4ede1; /* the page itself */
-  --card: #fbf7ef; /* raised things like cards and forms */
-  --card-2: #ebe1d1; /* hover, and quiet fills */
-  --ink: #2a211a; /* main text */
-  --ink-soft: #6b5d50; /* secondary text */
-  --ink-faint: #9a8b7b; /* captions, placeholders */
+  /* Background & surfaces */
+  --paper: #f4ede1;
+  --card: #fbf7ef;
+  --card-2: #ebe1d1;
 
-  /* Lines */
+  /* Text colors */
+  --ink: #2a211a;
+  --ink-soft: #6b5d50;
+  --ink-faint: #9a8b7b;
+
+  /* Borders */
   --rule: #ddd0bc;
   --rule-strong: #c4b49c;
 
-  /* Accents */
-  --orange: #c2562b; /* buttons, links, the track that is playing */
-  --orange-dark: #a4451f; /* hover */
-  --green: #3e5c50; /* the quieter second accent */
-  --red: #a63a26; /* errors */
+  /* Accent colors */
+  --orange: #c2562b;
+  --orange-dark: #a4451f;
+  --green: #3e5c50;
+  --red: #a63a26;
 
-  /* Text that sits on an orange button */
+  /* Button text on accent */
   --on-accent: #fdf8f1;
 
-  /* Soft fills */
+  /* Tints & fills */
   --tint-orange: rgba(194, 86, 43, 0.1);
   --tint-red: rgba(166, 58, 38, 0.1);
   --danger-border: rgba(166, 58, 38, 0.4);
   --danger-tint: #f3d6ce;
 
-  /* The error box */
+  /* Error states */
   --error-bg: #f6e4de;
   --error-border: #e0b7aa;
   --error-ink: #7d2b1a;
 
-
+  /* Mood-specific */
   --on-mood: #2a211a;
   --on-mood-soft: rgba(42, 33, 26, 0.65);
   --on-mood-faint: rgba(42, 33, 26, 0.55);
@@ -43,44 +50,57 @@
   --mood-panel-strong: rgba(255, 253, 248, 0.75);
   --mood-input-border: rgba(42, 33, 26, 0.25);
 
-  /* Less rounding for the retro look */
+  /* Spacing & sizing */
   --radius: 6px;
   --radius-lg: 10px;
 
-  /* A warm shadow */
+  /* Shadows */
   --lift: 0 1px 2px rgba(42, 33, 26, 0.06), 0 4px 14px rgba(42, 33, 26, 0.07);
 }
 
-/* Dark mode. The settings page puts data-theme="dark" on the html element,
-   and only the colours listed here change. */
+/* ===================================================================
+   CSS VARIABLES - Dark mode overrides
+   =================================================================== */
+
 :root[data-theme='dark'] {
+  /* Background & surfaces */
   --paper: #1b1714;
   --card: #241f1b;
   --card-2: #302925;
+
+  /* Text colors */
   --ink: #f0e7db;
   --ink-soft: #b5a695;
   --ink-faint: #8a7a68;
 
+  /* Borders */
   --rule: #3a322c;
   --rule-strong: #4d423a;
 
-  /* Brighter, because the darker versions disappear on a dark page */
+  /* Accent colors (brighter for dark background) */
   --orange: #e0703f;
   --orange-dark: #c2562b;
   --green: #6f9a86;
   --red: #e07a63;
 
+  /* Tints & fills */
   --tint-orange: rgba(224, 112, 63, 0.14);
   --tint-red: rgba(224, 122, 99, 0.14);
   --danger-border: rgba(224, 122, 99, 0.45);
   --danger-tint: #4a2a22;
 
+  /* Error states */
   --error-bg: #3a221c;
   --error-border: #6b3a2c;
   --error-ink: #f0b3a0;
 
+  /* Shadows */
   --lift: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.35);
 }
+
+/* ===================================================================
+   RESET - Default browser styles
+   =================================================================== */
 
 *,
 *::before,
@@ -89,6 +109,10 @@
   margin: 0;
   padding: 0;
 }
+
+/* ===================================================================
+   BASE ELEMENTS - Body, typography, interactions
+   =================================================================== */
 
 body {
   background: var(--paper);
@@ -99,7 +123,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Big headings use the serif font */
 h1 {
   font-family: 'Instrument Serif', Georgia, serif;
   font-weight: 400;
@@ -107,7 +130,6 @@ h1 {
   line-height: 1.05;
 }
 
-/* Smaller headings stay in Work Sans */
 h2,
 h3 {
   font-family: 'Work Sans', sans-serif;
@@ -125,15 +147,17 @@ button:disabled {
   cursor: default;
 }
 
-/* Anything reachable with the Tab key must show where it is */
 :focus-visible {
   outline: 2px solid var(--orange);
   outline-offset: 2px;
   border-radius: 3px;
 }
 
-/* Pieces we reuse on several pages */
+/* ===================================================================
+   COMPONENTS - Reusable styles
+   =================================================================== */
 
+/* Primary button */
 .btn {
   background: var(--orange);
   color: var(--on-accent);
@@ -150,7 +174,7 @@ button:disabled {
   border-color: var(--orange-dark);
 }
 
-/* The quieter button, outlined with no fill */
+/* Secondary button (outlined) */
 .btn-outline {
   background: transparent;
   color: var(--ink);
@@ -167,6 +191,7 @@ button:disabled {
   border-color: var(--ink-soft);
 }
 
+/* Error message box */
 .error-box {
   background: var(--error-bg);
   border: 1px solid var(--error-border);
@@ -177,13 +202,14 @@ button:disabled {
   font-size: 0.9rem;
 }
 
+/* Empty state message */
 .empty-message {
   text-align: center;
   color: var(--ink-soft);
   padding: 60px 20px;
 }
 
-/* Small spaced capitals */
+/* Small uppercase label */
 .label {
   font-size: 0.68rem;
   font-weight: 600;
