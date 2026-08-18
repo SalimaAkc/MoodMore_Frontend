@@ -1,4 +1,10 @@
-// mood settings (ids must match the database)
+// ===================================================================
+// MOOD SYSTEM - Mood definitions with colors and emojis
+// ===================================================================
+
+// ===================================================================
+// CORE MOODS
+// ===================================================================
 
 export const MOODS = [
   {
@@ -51,7 +57,11 @@ export const MOODS = [
   }
 ]
 
-// mood for saved favorites
+// ===================================================================
+// SPECIAL MOODS
+// ===================================================================
+
+// favorites (liked songs)
 export const FAVORITES_MOOD = {
   id: 7,
   name: 'Favorites',
@@ -61,7 +71,7 @@ export const FAVORITES_MOOD = {
   background: 'linear-gradient(150deg, #f0d8c6, #e6c3a9)'
 }
 
-// mood for custom playlists
+// custom (user-created playlists)
 export const CUSTOM_MOOD = {
   id: 8,
   name: 'Custom',
@@ -71,7 +81,7 @@ export const CUSTOM_MOOD = {
   background: 'linear-gradient(150deg, #e9e0d2, #ddd0bc)'
 }
 
-// fallback mood when we don't recognize it
+// fallback for unknown moods
 const UNKNOWN_MOOD = {
   id: 0,
   name: 'Playlist',
@@ -81,12 +91,16 @@ const UNKNOWN_MOOD = {
   background: 'linear-gradient(150deg, #e9e0d2, #ddd0bc)'
 }
 
-// find a mood by its name
+// ===================================================================
+// PUBLIC API - Mood lookups
+// ===================================================================
+
+// find mood by name
 export function findMood(name) {
   return MOODS.find(mood => mood.name === name)
 }
 
-// find a mood by its id
+// find mood by id
 export function findMoodById(id) {
   if (id === FAVORITES_MOOD.id) {
     return FAVORITES_MOOD

@@ -1,8 +1,14 @@
-// functions to talk to the backend
+// ===================================================================
+// API CLIENT - Communication with backend
+// ===================================================================
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
-// read and check the response from the server
+// ===================================================================
+// RESPONSE HANDLING
+// ===================================================================
+
+// read and validate server response
 async function readAnswer(response) {
   let data = null
 
@@ -12,7 +18,6 @@ async function readAnswer(response) {
     throw new Error('The server gave an answer we could not read. Try again later.')
   }
 
-  // server sends errors like { error: "message" }
   if (data && data.error) {
     throw new Error(data.error)
   }
@@ -24,9 +29,12 @@ async function readAnswer(response) {
   return data
 }
 
-// send a GET request and get JSON back
+// ===================================================================
+// PUBLIC API - Request methods
+// ===================================================================
+
+// GET request
 export async function getFromApi(path, params = {}) {
-  // make the query string from params
   const query = new URLSearchParams()
 
   for (const key in params) {
@@ -53,7 +61,7 @@ export async function getFromApi(path, params = {}) {
   return readAnswer(response)
 }
 
-
+// DELETE request
 export async function deleteFromApi(path, token, body) {
   const options = {
     method: 'DELETE',

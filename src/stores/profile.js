@@ -1,20 +1,34 @@
-// manage the user's profile
+// ===================================================================
+// PROFILE STORE - User profile management
+// ===================================================================
 
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { supabase } from '@/lib/supabase'
 import { useLanguageStore } from '@/stores/language'
 
+// ===================================================================
+// CONFIGURATION
+// ===================================================================
+
 const COLUMNS = 'id, email, full_name, avatar_url, created_at'
 
 export const useProfileStore = defineStore('profile', () => {
+  // ===================================================================
+  // STATE
+  // ===================================================================
+
   const lang = useLanguageStore()
 
   const profile = ref(null)
   const loading = ref(false)
   const errorMessage = ref('')
 
-  // load profile when user logs in
+  // ===================================================================
+  // PUBLIC API
+  // ===================================================================
+
+  // load user profile
   async function load(userId) {
     loading.value = true
     errorMessage.value = ''

@@ -1,4 +1,6 @@
-// manage liked songs (stored as a playlist)
+// ===================================================================
+// FAVORITES STORE - Manage liked songs
+// ===================================================================
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
@@ -7,13 +9,21 @@ import { FAVORITES_MOOD } from '@/lib/moods'
 import { useLanguageStore } from '@/stores/language'
 
 export const useFavoritesStore = defineStore('favorites', () => {
+  // ===================================================================
+  // STATE
+  // ===================================================================
+
   const lang = useLanguageStore()
 
-  const playlist = ref(null) // the database row or null
+  const playlist = ref(null)
   const tracks = ref([])
   const errorMessage = ref('')
 
-  // Set is faster than array for searching
+  // ===================================================================
+  // COMPUTED
+  // ===================================================================
+
+  // fast lookup for favorites
   const favoriteIds = computed(() => {
     const ids = new Set()
 

@@ -1,11 +1,22 @@
+// ===================================================================
+// PLAYER STORE - Music playback control
+// ===================================================================
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
+// ===================================================================
+// CONFIGURATION
+// ===================================================================
+
 const STORAGE_KEY = 'moodandmore-player'
 export const REPEAT_MODES = ['off', 'all', 'one']
 
-// load shuffle and repeat settings from browser storage
+// ===================================================================
+// HELPER FUNCTIONS
+// ===================================================================
+
+// load saved settings
 function loadSaved() {
   try {
     const rawData = localStorage.getItem(STORAGE_KEY)
@@ -15,7 +26,7 @@ function loadSaved() {
   }
 }
 
-// make array of numbers 0 to length-1
+// create array of numbers
 function countUpTo(length) {
   const numbers = []
 
@@ -26,7 +37,7 @@ function countUpTo(length) {
   return numbers
 }
 
-// shuffle array (Fisher-Yates: swap each element with random earlier one)
+// shuffle array
 function shuffled(numbers) {
   const copy = numbers.slice()
 
@@ -44,17 +55,23 @@ function shuffled(numbers) {
 export const usePlayerStore = defineStore('player', () => {
   const saved = loadSaved()
 
-  const queue = ref([]) // all the tracks
-  const order = ref([]) // which positions to play (changes with shuffle)
-  const position = ref(-1) // where we are in the order (-1 = stopped)
+  // ===================================================================
+  // STATE
+  // ===================================================================
+
+  const queue = ref([])
+  const order = ref([])
+  const position = ref(-1)
 
   const isPlaying = ref(false)
   const shuffle = ref(saved.shuffle === true)
-
-  // accept saved repeat mode if it's valid
   const repeat = ref(REPEAT_MODES.includes(saved.repeat) ? saved.repeat : 'off')
 
-  // save shuffle and repeat settings
+  // ===================================================================
+  // PERSISTENCE
+  // ===================================================================
+
+  // save settings
   function saveChoices() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({

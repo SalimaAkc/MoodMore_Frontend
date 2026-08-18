@@ -1,13 +1,23 @@
-// keep track of the chosen language
+// ===================================================================
+// LANGUAGE STORE - Multilingual support
+// ===================================================================
 
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { TRANSLATIONS } from '@/lib/translations'
 
+// ===================================================================
+// CONFIGURATION
+// ===================================================================
+
 const STORAGE_KEY = 'moodandmore-language'
 const DEFAULT_LANGUAGE = 'en'
 
-// load saved language if it exists
+// ===================================================================
+// HELPERS
+// ===================================================================
+
+// load language preference
 function loadSaved() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
@@ -22,13 +32,21 @@ function loadSaved() {
   return DEFAULT_LANGUAGE
 }
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 export const useLanguageStore = defineStore('language', () => {
   const current = ref(loadSaved())
 
-  // tell the browser the page language (for screen readers)
+  // set page language
   document.documentElement.setAttribute('lang', current.value)
 
-  // look up text, fallback to English if missing
+  // ===================================================================
+  // PUBLIC API - Translation function
+  // ===================================================================
+
+  // translate text with variable replacement
   function t(key, values) {
     const table = TRANSLATIONS[current.value] || TRANSLATIONS[DEFAULT_LANGUAGE]
 

@@ -1,11 +1,21 @@
-// user preferences (saved locally, not in account)
+// ===================================================================
+// SETTINGS STORE - User preferences
+// ===================================================================
 
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 
+// ===================================================================
+// CONFIGURATION
+// ===================================================================
+
 const STORAGE_KEY = 'moodandmore-settings'
 
-// load settings from browser
+// ===================================================================
+// HELPERS
+// ===================================================================
+
+// load settings from storage
 function loadSaved() {
   try {
     const rawData = localStorage.getItem(STORAGE_KEY)
@@ -15,7 +25,7 @@ function loadSaved() {
   }
 }
 
-// set theme on html element (CSS reads this)
+// apply theme to page
 function applyTheme(isDark) {
   if (isDark) {
     document.documentElement.setAttribute('data-theme', 'dark')
@@ -24,10 +34,17 @@ function applyTheme(isDark) {
   }
 }
 
+// ===================================================================
+// STORE SETUP
+// ===================================================================
+
 export const useSettingsStore = defineStore('settings', () => {
   const saved = loadSaved()
 
-  // check for false specifically (not undefined)
+  // ===================================================================
+  // STATE
+  // ===================================================================
+
   let startAutoplay = true
   if (saved.autoplay !== undefined) {
     startAutoplay = saved.autoplay
@@ -41,10 +58,13 @@ export const useSettingsStore = defineStore('settings', () => {
   const autoplay = ref(startAutoplay)
   const darkMode = ref(startDark)
 
-  // apply dark mode right away if it was saved
   applyTheme(darkMode.value)
 
-  // save settings to browser
+  // ===================================================================
+  // PERSISTENCE
+  // ===================================================================
+
+  // save settings
   function saveSettings() {
     try {
       const settings = {

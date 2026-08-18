@@ -1,12 +1,22 @@
-// show mood stats from the past month
+// ===================================================================
+// STATISTICS - Mood breakdown and analytics
+// ===================================================================
 
 import { MOODS } from './moods'
+
+// ===================================================================
+// CONFIGURATION
+// ===================================================================
 
 export const DEFAULT_DAYS = 30
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000
 
-// get playlists from the last N days
+// ===================================================================
+// PUBLIC API - Statistics functions
+// ===================================================================
+
+// get playlists from recent days
 export function recentPlaylists(playlists, days = DEFAULT_DAYS, now = new Date()) {
   if (!Array.isArray(playlists)) return []
 

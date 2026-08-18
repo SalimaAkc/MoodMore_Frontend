@@ -1,6 +1,6 @@
-// manage user's playlists (used by add track button)
-// we only load basic info (id, name, mood) to keep it fast
-// song lists are loaded when you try to add a song
+// ===================================================================
+// PLAYLISTS STORE - User playlist management
+// ===================================================================
 
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -8,11 +8,19 @@ import { supabase } from '@/lib/supabase'
 import { CUSTOM_MOOD, FAVORITES_MOOD } from '@/lib/moods'
 
 export const usePlaylistsStore = defineStore('playlists', () => {
+  // ===================================================================
+  // STATE
+  // ===================================================================
+
   const list = ref([])
   const loading = ref(false)
   const loaded = ref(false)
 
-  // load playlists (favorites not included, it's handled separately)
+  // ===================================================================
+  // PUBLIC API
+  // ===================================================================
+
+  // load user playlists
   async function load(userId) {
     loading.value = true
 
