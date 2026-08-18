@@ -1,17 +1,29 @@
-# M&M — frontend
+# Mood&More — Frontend
 
-**Mood & More.** Pick how you feel, get a playlist. Save the ones you like to
-your collection.
+The app you see in your browser. Pick a mood, get a playlist, save it.
 
-Vue 3 app, talking to Supabase for accounts and playlists, and to the
-[Mood&More backend](https://github.com/SalimaAkc/M-M_Backend) for tracks.
+Built with **Vue 3**. Talks to:
+- **Supabase** for accounts and playlists
+- **Backend API** for song searches
+- **YouTube** (through the backend)
 
-The app talks to Supabase directly, with no backend in between. That is safe
-because the database has its own Row Level Security rules that stop one user
-from reading another user's playlists. Only the YouTube side goes through the
-backend, so the API key stays on a server instead of in the browser.
+---
 
-## Setup
+## What the App Does
+
+- 🎵 **Pick a mood** (Happy, Energetic, Calm, Romantic, Melancholic, Sad)
+- 🔍 **Search for songs** directly
+- 💾 **Save playlists** to your collection
+- ❤️ **Like/heart songs** (add to favorites)
+- 🎚️ **Control playback** (shuffle, repeat, skip)
+- 🌍 **3 languages** (English, Dutch, French)
+- 🌙 **Dark mode** available
+
+---
+
+## How to Run It Locally
+
+### 1. Install it
 
 You need Node 20 or newer.
 
@@ -20,151 +32,136 @@ npm install
 cp .env.example .env
 ```
 
-Put your Supabase URL and anon key in `.env`. You find them in the Supabase
-Dashboard under Project Settings -> API. `VITE_API_URL` points at the backend,
-`http://localhost:3000` while you develop.
+### 2. Add your settings
+
+Put these in `.env`:
+
+```
+VITE_API_URL=http://localhost:3000
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_key
+```
+
+Get Supabase URL and key from: **Supabase Dashboard → Settings → API**
+
+### 3. Start it
 
 ```bash
 npm run dev
 ```
 
-Then open http://localhost:5173
+Then open **http://localhost:5173**
 
-The backend needs to be running too, or the mood pages stay empty. See the
-[backend repo](https://github.com/SalimaAkc/M-M_Backend) for that half.
+⚠️ **You need the backend running too!** See the [backend README](https://github.com/SalimaAkc/MoodMore_Backend)
 
-## The database
+---
 
-The SQL lives in `supabase/`. In the Supabase SQL Editor, run the two files in
-this order:
+## Database Setup
 
-1. `supabase/schema.sql` — makes the tables and adds the 8 moods
-2. `supabase/rls-policies.sql` — adds the security rules
+Files are in `supabase/` folder.
 
-Do not skip the second one. Without it anyone can read and delete every user's
-playlists, because the app talks to the database straight from the browser.
+**In Supabase SQL Editor, run these in order:**
 
-Both files are safe to run more than once. If your database was set up before
-mood 8 existed, run `schema.sql` again or the + button on a track cannot make
-a playlist.
+1. **schema.sql** — creates tables (moods, playlists, profiles)
+2. **rls-policies.sql** — adds security rules (important!)
+3. **migration-profile.sql** — adds extra profile features
 
-A database that already existed before the profile page needs one extra file:
+⚠️ Don't skip step 2! Without security rules, anyone can see everyone's playlists.
 
-3. `supabase/migration-profile.sql` — adds `playlists.is_public` and the
-   `follows` table
+---
 
-Those same statements are already inside the two files above, so a database
-built from scratch does not need the third one.
+## File Structure
 
-The same two files are in the backend repo. They are the same schema, kept in
-both places so either half can be set up on its own. If you change one, change
-the other.
-
-Four tables:
-
-| Table       | Columns                                                                |
-| ----------- | ---------------------------------------------------------------------- |
-| `moods`     | `id`, `name`                                                           |
-| `playlists` | `id`, `user_id`, `mood_id`, `name`, `songs`, `is_public`, `created_at` |
-| `profiles`  | `id`, `email`, `full_name`, `avatar_url`, `created_at`                 |
-| `follows`   | `follower_id`, `followee_id`, `created_at`                             |
-
-Accounts themselves live in `auth.users`, which Supabase manages. `profiles` is
-our own copy of the bits we need, filled in by a trigger when someone signs up.
-Its `id` is the same id as in `auth.users`.
-
-`is_public` says whether a playlist may be shown on its owner's profile. It
-defaults to false. Note that it does not open anything up yet: the security
-rules still limit every select to your own rows, so a published playlist is
-for now only visible to you. The rule that lets other people read it belongs
-with the change that makes other profiles viewable, and is not written yet.
-
-`songs` is a JSON list of tracks stored inside the playlist row:
-
-```json
-[{ "videoId": "UtF6Jej8yb4", "title": "Avicii - The Nights",
-   "artist": "AviciiOfficialVEVO", "duration": "3:11", "thumbnail": "https://…" }]
+```
+src/
+├── main.js                  # Starts the app
+├── App.vue                  # Main layout/navbar
+├── router/                  # Pages and navigation
+├── lib/                     # Useful functions
+│   ├── api.js              # Talk to backend
+│   ├── supabase.js         # Database connection
+│   ├── moods.js            # Mood definitions
+│   └── translations.js     # Text in 3 languages
+├── stores/                 # Shared data (Pinia)
+│   ├── auth.js             # Login/signup
+│   ├── player.js           # Music player
+│   ├── favorites.js        # Liked songs
+│   └── ...
+├── components/             # Reusable parts
+│   ├── TrackList.vue       # Song list
+│   └── BottomPlayer.vue    # Music player
+└── views/                  # Pages
+    ├── HomeView.vue
+    ├── MoodView.vue
+    ├── CollectionView.vue
+    └── ...
 ```
 
-## Reset password links
+---
 
-In the Supabase Dashboard, under Authentication -> URL Configuration, add your
-app's address to Redirect URLs:
+## How Data Flows
+
+1. **You pick a mood** → Frontend asks backend
+2. **Backend searches YouTube** → Returns 50 songs
+3. **Frontend shows them** → You can play or save
+4. **Save to collection** → Goes to Supabase database
+5. **Login/accounts** → Handled by Supabase
+6. **Other users can't see your playlists** → Database security rules protect them
+
+---
+
+## Password Reset
+
+When someone resets their password:
+
+1. They click "Forgot Password"
+2. Supabase sends an email with a link
+3. Link goes to `/reset-password`
+4. They set a new password
+
+**Setup required:**
+
+Go to **Supabase → Authentication → URL Configuration**
+
+Add these Redirect URLs:
 
 ```
 http://localhost:5173/reset-password
-https://your-site.example/reset-password
+https://your-deployed-url/reset-password
 ```
 
-Supabase refuses to send people to an address that is not on that list, so
-without this the link in the reset email goes nowhere.
+Without this, reset links won't work.
 
-## Where things are
+---
 
-Everything lives under `src/`:
-
-| File                          | What it does                     |
-| ----------------------------- | -------------------------------- |
-| `main.js`                     | starts the app                   |
-| `App.vue`                     | navbar and page frame            |
-| `router/index.js`             | which address shows which page   |
-| `lib/api.js`                  | talks to our backend             |
-| `lib/supabase.js`             | connects to the database         |
-| `lib/moods.js`                | the moods and their colours      |
-| `lib/stats.js`                | the month overview on a profile  |
-| `lib/translations.js`         | all the text in en, nl and fr    |
-| `stores/`                     | shared data, one file per topic  |
-| `stores/profile.js`           | the user's profile and picture   |
-| `stores/language.js`          | the chosen language and t()      |
-| `stores/player.js`            | the queue, shuffle and repeat    |
-| `stores/playlists.js`         | the list behind the + on a track |
-| `components/TrackList.vue`    | a list of tracks                 |
-| `components/BottomPlayer.vue` | the player bar                   |
-| `views/`                      | one file per page                |
-
-## Sensitive actions
-
-Changing the email, changing the password and deleting the account all ask for
-the password that is in use now, because a login token only says which account
-something belongs to, not who is sitting at the keyboard.
-
-Deleting an account goes through the backend, which checks the password again on
-the server, so calling it straight from a script with a stolen token gets
-nowhere. The other two happen here in the browser against Supabase, so the check
-is a speed bump rather than a wall. Two settings in the Supabase Dashboard close
-that gap, under Authentication -> Providers -> Email: **Secure email change**
-and **Secure password change**. Both are worth turning on.
-
-## Tests
+## Running Tests
 
 ```bash
 npm test
 ```
 
-They cover the pieces that are easy to get quietly wrong: the shuffle and repeat
-logic, and whether the three languages still have exactly the same lines.
+Tests check:
+- Shuffle and repeat logic
+- Language translations (all 3 have same text)
+- Statistics calculations
 
-## Notes
+---
 
-- The `&` in the `Mood&More` folder name breaks the `.cmd` shims npm creates
-  for tools like `vite`. cmd.exe pastes the folder path into the command line
-  before it splits the line on `&`, so the command tears in half and you get
-  `... is not recognized as an internal or external command`. That is why the
-  scripts below call `node node_modules/vite/bin/vite.js` instead of plain
-  `vite`: going straight to node skips the shim. It behaves the same on Linux,
-  so CI is unaffected. Please keep new scripts in that style.
-- Restart after changing `.env`. Vite only reads it when it starts.
-- Never commit `.env`. It is already in `.gitignore`.
-- Everything in a `VITE_` variable ends up in the JavaScript that visitors
-  download. That is fine for the Supabase anon key, which is meant to be public.
-  Never put the service_role key in one.
-- `vercel.json` and `public/_redirects` send every address to `index.html`.
-  Without them, visiting `/collection` directly gives a 404, because Vue Router
-  handles those addresses in the browser and the server knows nothing about them.
+## Important Notes
 
-## Putting it online
+- **Restart after changing `.env`** — app reads it on startup only
+- **Never commit `.env`** — it's in `.gitignore` already
+- **Don't put `service_role` key in `.env`** — only the anon key
+- **Backend must be running** — or mood pages will be empty
+- **First load after long silence might be slow** — backend is waking up (free tier)
 
-See [DEPLOY.md](DEPLOY.md).
+---
+
+## Deploying
+
+See [DEPLOY.md](DEPLOY.md) for instructions on deploying to Vercel.
+
+---
 
 ## License
 
