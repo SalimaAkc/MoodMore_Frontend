@@ -46,6 +46,7 @@ const MENU_HEIGHT = 300
 
 const menu = ref(null)
 const newName = ref('')
+const newIsPublic = ref(false)
 const makingNew = ref(false)
 const busy = ref(false)
 const notice = ref('')
@@ -57,6 +58,7 @@ const nameInput = ref(null)
 
 async function startNewPlaylist() {
   makingNew.value = true
+  newIsPublic.value = false
 
   await nextTick()
 
@@ -69,6 +71,7 @@ function closeMenu() {
   menu.value = null
   makingNew.value = false
   newName.value = ''
+  newIsPublic.value = false
 }
 
 function openMenu(event, track) {
@@ -125,7 +128,7 @@ async function createAndAdd() {
 
   busy.value = true
 
-  const result = await playlists.createWithTrack(name, menu.value.track, auth.user.id)
+  const result = await playlists.createWithTrack(name, menu.value.track, auth.user.id, newIsPublic.value)
 
   busy.value = false
   reportResult(result, name)
@@ -260,6 +263,15 @@ function toggleFavorite(track) {
           maxlength="60"
           :placeholder="lang.t('track.playlistName')"
         />
+
+        <!-- Visibility toggle -->
+        <div class="visibility-toggle">
+          <label>
+            <input v-model="newIsPublic" type="checkbox" />
+            <span>{{ newIsPublic ? lang.t('profile.public') : lang.t('profile.private') }}</span>
+          </label>
+        </div>
+
         <button class="btn" type="submit" :disabled="busy || !newName.trim()">
           {{ busy ? lang.t('common.saving') : lang.t('track.create') }}
         </button>
@@ -499,6 +511,30 @@ function toggleFavorite(track) {
 
 .menu-new input:focus {
   border-color: var(--orange);
+}
+
+.visibility-toggle {
+  padding: 0 4px;
+}
+
+.visibility-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.visibility-toggle input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--orange);
+}
+
+.visibility-toggle span {
+  flex: 1;
 }
 
 /* ===================================================================

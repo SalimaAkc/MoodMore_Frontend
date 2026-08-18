@@ -78,14 +78,15 @@ export const usePlaylistsStore = defineStore('playlists', () => {
   }
 
   // make a new playlist with one song
-  async function createWithTrack(name, track, userId) {
+  async function createWithTrack(name, track, userId, isPublic = false) {
     const result = await supabase
       .from('playlists')
       .insert({
         user_id: userId,
         mood_id: CUSTOM_MOOD.id,
         name: name,
-        songs: [track]
+        songs: [track],
+        is_public: isPublic
       })
       .select('id, name, mood_id')
       .single()
