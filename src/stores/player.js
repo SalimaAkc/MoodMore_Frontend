@@ -63,6 +63,11 @@ export const usePlayerStore = defineStore('player', () => {
   const order = ref([])
   const position = ref(-1)
 
+  // where the queue came from, so we can show it in the player and
+  // put a playing mark on the playlist card it belongs to
+  const source = ref('')
+  const sourceId = ref(null)
+
   const isPlaying = ref(false)
   const shuffle = ref(saved.shuffle === true)
   const repeat = ref(REPEAT_MODES.includes(saved.repeat) ? saved.repeat : 'off')
@@ -108,9 +113,12 @@ export const usePlayerStore = defineStore('player', () => {
     return position.value > 0
   })
 
-  // start playing tracks
-  function play(tracks, startAt = 0) {
+  // start playing tracks (from is the name of the playlist or mood,
+  // fromId is the playlist id when it came from a saved playlist)
+  function play(tracks, startAt = 0, from = '', fromId = null) {
     queue.value = tracks
+    source.value = from
+    sourceId.value = fromId
 
     if (shuffle.value) {
       // play clicked track first, then shuffle the rest
@@ -201,13 +209,23 @@ export const usePlayerStore = defineStore('player', () => {
     queue.value = []
     order.value = []
     position.value = -1
+    source.value = ''
+    sourceId.value = null
     isPlaying.value = false
+  }
+
+  // is this playlist the one we are playing right now
+  function isPlayingFrom(playlistId) {
+    return sourceId.value !== null && sourceId.value === playlistId
   }
 
   return {
     queue,
     order,
     position,
+    source,
+    sourceId,
+    isPlayingFrom,
     isPlaying,
     shuffle,
     repeat,

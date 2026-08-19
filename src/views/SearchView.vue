@@ -99,7 +99,7 @@ watch(() => route.query.q, (newWords) => {
       <h1 v-if="searchWords">{{ lang.t('search.resultsFor', { query: searchWords }) }}</h1>
       <h1 v-else>{{ lang.t('search.title') }}</h1>
 
-      <button v-if="tracks.length" class="btn" @click="player.play(tracks, 0)">▶ {{ lang.t('common.playAll') }}</button>
+      <button v-if="tracks.length" class="btn" @click="player.play(tracks, 0, lang.t('search.resultsFor', { query: searchWords }))">▶ {{ lang.t('common.playAll') }}</button>
     </header>
 
     <p v-if="moreError" class="error-box">{{ moreError }}</p>
@@ -110,7 +110,7 @@ watch(() => route.query.q, (newWords) => {
     <p v-else-if="!tracks.length" class="empty-message">{{ lang.t('search.nothingFound', { query: searchWords }) }}</p>
 
     <template v-else>
-      <TrackList :tracks="tracks" />
+      <TrackList :tracks="tracks" :source="lang.t('search.resultsFor', { query: searchWords })" />
 
       <div v-if="nextPageToken" class="more">
         <button class="btn-outline" :disabled="loadingMore" @click="loadMore">

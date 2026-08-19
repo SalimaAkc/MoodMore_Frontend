@@ -22,6 +22,16 @@ const props = defineProps({
   editing: {
     type: Boolean,
     default: false
+  },
+  // name of the playlist or mood these tracks come from
+  source: {
+    type: String,
+    default: ''
+  },
+  // playlist id, so the collection page can mark the playing card
+  sourceId: {
+    type: [String, Number],
+    default: null
   }
 })
 
@@ -141,7 +151,7 @@ async function createAndAdd() {
 // ===================================================================
 
 function playFrom(position) {
-  player.play(props.tracks, position)
+  player.play(props.tracks, position, props.source, props.sourceId)
 }
 
 function isPlaying(track) {

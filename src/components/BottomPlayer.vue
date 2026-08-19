@@ -257,6 +257,11 @@ function repeatLabel() {
       <div class="info">
         <span class="title">{{ player.currentTrack.title }}</span>
         <span class="artist">{{ player.currentTrack.artist }}</span>
+
+        <!-- which playlist or mood this song is playing from -->
+        <span v-if="player.source" class="source">
+          {{ lang.t('player.playingFrom', { name: player.source }) }}
+        </span>
       </div>
 
       <div class="buttons">
@@ -392,7 +397,7 @@ function repeatLabel() {
 }
 
 /* ===================================================================
-   INFO - Track title and artist
+   INFO - Track title, artist and where it is playing from
    =================================================================== */
 
 .info {
@@ -403,7 +408,8 @@ function repeatLabel() {
 }
 
 .title,
-.artist {
+.artist,
+.source {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -417,6 +423,12 @@ function repeatLabel() {
 .artist {
   font-size: 0.8rem;
   color: var(--ink-soft);
+}
+
+.source {
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  margin-top: 1px;
 }
 
 /* ===================================================================

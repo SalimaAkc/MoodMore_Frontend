@@ -154,7 +154,7 @@ onMounted(async () => {
             </template>
 
             <template v-else>
-              <button class="btn" :disabled="!tracks.length" @click="player.play(tracks, 0)">
+              <button class="btn" :disabled="!tracks.length" @click="player.play(tracks, 0, playlist.name, playlist.id)">
                 ▶ {{ lang.t('common.playAll') }}
               </button>
               <button class="btn-outline" @click="startEditing">✎ {{ lang.t('playlist.edit') }}</button>
@@ -175,7 +175,7 @@ onMounted(async () => {
 
         <template v-else>
           <p v-if="!tracks.length" class="empty-message">{{ lang.t('playlist.empty') }}</p>
-          <TrackList v-else :tracks="tracks" />
+          <TrackList v-else :tracks="tracks" :source="playlist.name" :source-id="playlist.id" />
         </template>
       </div>
     </template>

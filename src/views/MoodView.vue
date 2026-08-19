@@ -155,7 +155,7 @@ function cancelSave() {
         <p class="count">{{ loading ? lang.t('common.loading') : lang.t('common.tracks', { count: tracks.length }) }}</p>
 
         <div class="buttons">
-          <button class="btn" :disabled="loading || !tracks.length" @click="player.play(tracks, 0)">
+          <button class="btn" :disabled="loading || !tracks.length" @click="player.play(tracks, 0, lang.t('moodName.' + mood.id))">
             ▶ {{ lang.t('common.playAll') }}
           </button>
           <button
@@ -177,7 +177,7 @@ function cancelSave() {
       <p v-else-if="!tracks.length" class="empty-message">{{ lang.t('mood.noTracks') }}</p>
 
       <template v-else>
-        <TrackList :tracks="tracks" />
+        <TrackList :tracks="tracks" :source="lang.t('moodName.' + mood.id)" />
 
         <div v-if="nextPageToken" class="more">
           <button class="btn-outline" :disabled="loadingMore" @click="loadMore">
