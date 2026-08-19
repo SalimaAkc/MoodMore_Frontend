@@ -65,12 +65,21 @@ const calendarDays = computed(() => {
   return days
 })
 
+// turn a date into a "YYYY-MM-DD" key using the local timezone
+// (toISOString would use UTC and shift the day by one)
+function toDateKey(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return year + '-' + month + '-' + day
+}
+
 const playlistsByDate = computed(() => {
   const map = {}
 
   playlists.value.forEach(playlist => {
-    const date = new Date(playlist.created_at)
-    const dateStr = date.toISOString().split('T')[0] // YYYY-MM-DD
+    const dateStr = toDateKey(new Date(playlist.created_at))
 
     if (!map[dateStr]) {
       map[dateStr] = []
@@ -81,7 +90,8 @@ const playlistsByDate = computed(() => {
   return map
 })
 
-const moodByDate = computed(() => {
+// every mood used on a day, most used first
+const moodsByDate = computed(() => {
   const map = {}
 
   Object.entries(playlistsByDate.value).forEach(([dateStr, playlistList]) => {
@@ -90,17 +100,11 @@ const moodByDate = computed(() => {
       moodCounts[p.mood_id] = (moodCounts[p.mood_id] || 0) + 1
     })
 
-    // Get the most common mood for that day
-    let dominantMood = null
-    let maxCount = 0
-    Object.entries(moodCounts).forEach(([moodId, count]) => {
-      if (count > maxCount) {
-        maxCount = count
-        dominantMood = parseInt(moodId)
-      }
-    })
-
-    map[dateStr] = dominantMood
+    // sort the moods so the most used one comes first
+    map[dateStr] = Object.entries(moodCounts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([moodId]) => moodMap.value[parseInt(moodId)])
+      .filter(mood => mood)
   })
 
   return map
@@ -110,31 +114,48 @@ const moodByDate = computed(() => {
 // HELPER FUNCTIONS
 // ===================================================================
 
-function getDayMood(day) {
-  if (!day) return null
+// all moods used on a day (empty list when nothing was made that day)
+function getMoodsForDay(day) {
+  if (!day) return []
 
-  const dateStr = new Date(
+  const dateStr = toDateKey(new Date(
     currentMonth.value.getFullYear(),
     currentMonth.value.getMonth(),
     day
-  ).toISOString().split('T')[0]
+  ))
 
-  return moodByDate.value[dateStr]
+  return moodsByDate.value[dateStr] || []
 }
 
-function getMoodForDay(day) {
-  const moodId = getDayMood(day)
-  return moodId ? moodMap.value[moodId] : null
+// pull the first colour out of a mood gradient so we can build stripes
+function moodColor(mood) {
+  const match = mood.background.match(/#[0-9a-f]{3,6}/i)
+  return match ? match[0] : mood.background
+}
+
+// one mood = its normal gradient, more moods = hard-edged colour bands
+function dayBackground(day) {
+  const moods = getMoodsForDay(day)
+  if (!moods.length) return {}
+  if (moods.length === 1) return { background: moods[0].background }
+
+  const size = 100 / moods.length
+  const stops = moods.map((mood, index) => {
+    const color = moodColor(mood)
+    return color + ' ' + (index * size) + '%, ' + color + ' ' + ((index + 1) * size) + '%'
+  })
+
+  return { background: 'linear-gradient(120deg, ' + stops.join(', ') + ')' }
 }
 
 function getPlaylistCountForDay(day) {
   if (!day) return 0
 
-  const dateStr = new Date(
+  const dateStr = toDateKey(new Date(
     currentMonth.value.getFullYear(),
     currentMonth.value.getMonth(),
     day
-  ).toISOString().split('T')[0]
+  ))
 
   return playlistsByDate.value[dateStr]?.length || 0
 }
@@ -214,14 +235,23 @@ onMounted(async () => {
             v-for="(day, index) in calendarDays"
             :key="index"
             class="day"
-            :class="{ empty: !day, 'has-mood': day && getMoodForDay(day) }"
-            :style="day && getMoodForDay(day) ? { background: getMoodForDay(day).background } : {}"
+            :class="{ empty: !day, 'has-mood': getMoodsForDay(day).length }"
+            :style="dayBackground(day)"
           >
             <template v-if="day">
               <div class="day-number">{{ day }}</div>
-              <div v-if="getMoodForDay(day)" class="mood-emoji">
-                {{ getMoodForDay(day).emoji }}
+
+              <!-- one emoji per mood used that day -->
+              <div v-if="getMoodsForDay(day).length" class="mood-emojis">
+                <span
+                  v-for="mood in getMoodsForDay(day)"
+                  :key="mood.id"
+                  class="mood-emoji"
+                  :class="{ small: getMoodsForDay(day).length > 2 }"
+                  :title="lang.t('moodName.' + mood.id)"
+                >{{ mood.emoji }}</span>
               </div>
+
               <div v-if="getPlaylistCountForDay(day)" class="playlist-count">
                 {{ getPlaylistCountForDay(day) }}
               </div>
@@ -231,33 +261,34 @@ onMounted(async () => {
       </div>
 
       <!-- ===================================================================
-           MOOD LEGEND
+           SIDEBAR - Mood legend and stats
            =================================================================== -->
-      <div class="legend-card">
-        <h2>{{ lang.t('analytics.moods') }}</h2>
-        <div class="legend-grid">
-          <div v-for="mood in MOODS" :key="mood.id" class="legend-item">
-            <div class="legend-color" :style="{ background: mood.background }">
-              {{ mood.emoji }}
+      <div class="sidebar">
+        <!-- Mood legend -->
+        <div class="legend-card">
+          <h2>{{ lang.t('analytics.moods') }}</h2>
+          <div class="legend-grid">
+            <div v-for="mood in MOODS" :key="mood.id" class="legend-item">
+              <div class="legend-color" :style="{ background: mood.background }">
+                {{ mood.emoji }}
+              </div>
+              <span>{{ lang.t('moodName.' + mood.id) }}</span>
             </div>
-            <span>{{ lang.t('moodName.' + mood.id) }}</span>
           </div>
         </div>
-      </div>
 
-      <!-- ===================================================================
-           STATS
-           =================================================================== -->
-      <div class="stats-card">
-        <h2>{{ lang.t('analytics.stats') }}</h2>
-        <div class="stats-grid">
-          <div class="stat">
-            <span class="stat-value">{{ playlists.length }}</span>
-            <span class="stat-label">{{ lang.t('analytics.totalPlaylists') }}</span>
-          </div>
-          <div class="stat">
-            <span class="stat-value">{{ Object.keys(playlistsByDate).length }}</span>
-            <span class="stat-label">{{ lang.t('analytics.activeDays') }}</span>
+        <!-- Stats -->
+        <div class="stats-card">
+          <h2>{{ lang.t('analytics.stats') }}</h2>
+          <div class="stats-grid">
+            <div class="stat">
+              <span class="stat-value">{{ playlists.length }}</span>
+              <span class="stat-label">{{ lang.t('analytics.totalPlaylists') }}</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">{{ Object.keys(playlistsByDate).length }}</span>
+              <span class="stat-label">{{ lang.t('analytics.activeDays') }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -271,21 +302,21 @@ onMounted(async () => {
    =================================================================== */
 
 .page {
-  max-width: 1600px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 20px;
+  padding: 12px 16px;
 }
 
 h1 {
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   font-weight: 800;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
 }
 
 .subtitle {
   color: var(--ink-soft);
-  margin-bottom: 16px;
-  font-size: 0.95rem;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
 }
 
 /* ===================================================================
@@ -294,12 +325,19 @@ h1 {
 
 .analytics-section {
   display: grid;
-  grid-template-columns: 1fr 320px;
-  grid-template-rows: auto auto;
-  gap: 20px;
-  column-gap: 20px;
-  row-gap: 0;
+  grid-template-columns: 1fr 260px;
+  gap: 12px;
   align-items: start;
+}
+
+/* ===================================================================
+   SIDEBAR - Moods and stats stacked
+   =================================================================== */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 /* ===================================================================
@@ -310,20 +348,18 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 18px;
-  grid-column: 1 / 2;
-  grid-row: 1 / 3;
+  padding: 12px;
 }
 
 .calendar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .calendar-header h2 {
-  font-size: 1.15rem;
+  font-size: 1rem;
   font-weight: 700;
   margin: 0;
 }
@@ -347,33 +383,32 @@ h1 {
 .calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 4px;
 }
 
 .weekday {
   text-align: center;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--ink-soft);
-  padding: 8px;
+  padding: 4px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .day {
-  aspect-ratio: 1;
+  position: relative;
   border: 1px solid var(--rule);
-  border-radius: 10px;
+  border-radius: 8px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  font-size: 0.85rem;
-  padding: 6px;
+  font-size: 0.75rem;
+  padding: 4px;
   background: var(--paper);
   cursor: default;
-  min-height: 60px;
+  height: 54px;
+  overflow: hidden;
 }
 
 .day.empty {
@@ -388,18 +423,45 @@ h1 {
 
 .day-number {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* on mood days the number moves to the top-left corner */
+.day.has-mood .day-number {
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  font-size: 0.7rem;
+}
+
+.mood-emojis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  max-width: 100%;
 }
 
 .mood-emoji {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+/* shrink the emojis when a day has three or more moods */
+.mood-emoji.small {
+  font-size: 0.95rem;
 }
 
 .playlist-count {
-  font-size: 0.75rem;
+  position: absolute;
+  bottom: 4px;
+  right: 5px;
+  font-size: 0.6rem;
   font-weight: 600;
-  background: rgba(0, 0, 0, 0.1);
-  padding: 2px 5px;
+  line-height: 1;
+  background: rgba(0, 0, 0, 0.12);
+  padding: 2px 4px;
   border-radius: 4px;
 }
 
@@ -411,46 +473,43 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 16px;
-  grid-column: 2 / 3;
-  grid-row: 1 / 2;
-  align-self: start;
+  padding: 12px;
 }
 
 .legend-card h2 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .legend-grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
   background: var(--paper);
 }
 
 .legend-color {
-  width: 38px;
-  height: 38px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   flex-shrink: 0;
 }
 
 .legend-item span {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 500;
 }
 
@@ -462,44 +521,40 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 16px;
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  align-self: start;
-  margin-top: -28px;
+  padding: 12px;
 }
 
 .stats-card h2 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .stats-grid {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px;
+  padding: 10px;
   background: var(--paper);
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .stat-value {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--orange);
 }
 
 .stat-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--ink-soft);
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 /* ===================================================================
@@ -509,19 +564,6 @@ h1 {
 @media (max-width: 1000px) {
   .analytics-section {
     grid-template-columns: 1fr;
-  }
-
-  .legend-card,
-  .stats-card {
-    grid-column: 1;
-  }
-
-  .legend-card {
-    grid-row: auto;
-  }
-
-  .stats-card {
-    grid-row: auto;
   }
 
   .legend-grid {
@@ -558,12 +600,13 @@ h1 {
   }
 
   .day {
-    font-size: 0.75rem;
-    padding: 4px;
+    font-size: 0.7rem;
+    padding: 3px;
+    height: 44px;
   }
 
   .mood-emoji {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .weekday {
