@@ -466,6 +466,7 @@ h1 {
   grid-column: 2 / 3;
   grid-row: 2 / 3;
   align-self: start;
+  margin-top: -8px;
 }
 
 .stats-card h2 {
