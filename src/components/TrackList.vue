@@ -268,7 +268,7 @@ function toggleFavorite(track) {
         <div class="visibility-toggle">
           <label>
             <input v-model="newIsPublic" type="checkbox" />
-            <span>{{ newIsPublic ? lang.t('profile.public') : lang.t('profile.private') }}</span>
+            <span>{{ newIsPublic ? '🌐 ' + lang.t('profile.public') : '🔒 ' + lang.t('profile.private') }}</span>
           </label>
         </div>
 

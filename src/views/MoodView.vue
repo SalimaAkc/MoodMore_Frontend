@@ -189,7 +189,7 @@ function cancelSave() {
         <div class="toggle-group">
           <label>
             <input v-model="saveAsPublic" type="checkbox" />
-            <span>{{ saveAsPublic ? lang.t('profile.public') : lang.t('profile.private') }}</span>
+            <span>{{ saveAsPublic ? '🌐 ' + lang.t('profile.public') : '🔒 ' + lang.t('profile.private') }}</span>
           </label>
         </div>
 
