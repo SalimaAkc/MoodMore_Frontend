@@ -689,7 +689,7 @@ export const TRANSLATIONS = {
     'settings.note': 'La langue, le mode sombre et la lecture automatique sont enregistrés dans ce navigateur seulement.',
 
     'analytics.title': 'Votre calendrier des humeurs',
-    'analytics.subtitle': 'Voir vos modèles d'humeur au fil du temps.',
+    'analytics.subtitle': 'Voir vos modèles d\'humeur au fil du temps.',
     'analytics.moods': 'Humeurs',
     'analytics.stats': 'Statistiques',
     'analytics.totalPlaylists': 'Playlists créées',
