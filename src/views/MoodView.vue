@@ -102,7 +102,7 @@ function promptSaveToCollection() {
   }
 
   showSaveDialog.value = true
-  saveAsPublic.value = false
+  saveVisibility.value = 'private'
 }
 
 async function confirmSave() {
