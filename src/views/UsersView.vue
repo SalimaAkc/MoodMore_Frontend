@@ -218,6 +218,7 @@ h1 {
   border: 2px solid var(--orange);
   border-radius: 50%;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .search-box {
