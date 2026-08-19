@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/auth'
 import { useFavoritesStore } from '@/stores/favorites'
 import { usePlaylistsStore } from '@/stores/playlists'
+import { usePlayerStore } from '@/stores/player'
 import { findMoodById, FAVORITES_MOOD } from '@/lib/moods'
 import { useLanguageStore } from '@/stores/language'
 
@@ -18,6 +19,7 @@ import { useLanguageStore } from '@/stores/language'
 const auth = useAuthStore()
 const favorites = useFavoritesStore()
 const playlists = usePlaylistsStore()
+const player = usePlayerStore()
 const lang = useLanguageStore()
 
 // ===================================================================
@@ -122,7 +124,23 @@ async function remove(playlist) {
       >
         <RouterLink :to="`/playlist/${playlist.id}`" class="card-link">
           <span class="emoji">{{ findMoodById(playlist.mood_id).emoji }}</span>
-          <span class="name">{{ playlist.name }}</span>
+
+          <span class="name-row">
+            <span class="name">{{ playlist.name }}</span>
+
+            <!-- moving bars on the playlist that is playing right now -->
+            <span
+              v-if="player.isPlayingFrom(playlist.id)"
+              class="playing"
+              :class="{ paused: !player.isPlaying }"
+              :title="lang.t('collection.nowPlaying')"
+            >
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </span>
+          </span>
+
           <span class="meta">{{ lang.t('common.tracks', { count: songCount(playlist) }) }} · {{ formatDate(playlist.created_at) }}</span>
         </RouterLink>
 
@@ -177,10 +195,72 @@ h1 {
   font-size: 2.4rem;
 }
 
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .name {
   font-family: 'Instrument Serif', Georgia, serif;
   font-weight: 700;
   font-size: 1.1rem;
+}
+
+/* ===================================================================
+   PLAYING MARK - Moving bars like an equaliser
+   =================================================================== */
+
+.playing {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.bar {
+  width: 3px;
+  border-radius: 1px;
+  background: var(--on-mood);
+  transform-origin: bottom;
+  animation: bounce 0.9s ease-in-out infinite;
+}
+
+.bar:nth-child(1) {
+  height: 60%;
+  animation-delay: 0s;
+}
+
+.bar:nth-child(2) {
+  height: 100%;
+  animation-delay: 0.25s;
+}
+
+.bar:nth-child(3) {
+  height: 40%;
+  animation-delay: 0.5s;
+}
+
+/* hold the bars still while the music is paused */
+.playing.paused .bar {
+  animation-play-state: paused;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* respect people who asked for less movement */
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    animation: none;
+  }
 }
 
 .meta {

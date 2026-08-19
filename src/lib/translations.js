@@ -105,6 +105,7 @@ export const TRANSLATIONS = {
     'signup.failed': 'Could not create the account.',
 
     'collection.title': 'My collection',
+    'collection.nowPlaying': 'Playing now',
     'collection.empty': 'You have not saved any playlists yet.',
     'collection.pickMood': 'Pick a mood',
     'collection.deletePlaylist': 'Delete playlist',
@@ -348,6 +349,7 @@ export const TRANSLATIONS = {
     'signup.failed': 'Kon het account niet aanmaken.',
 
     'collection.title': 'Mijn collectie',
+    'collection.nowPlaying': 'Speelt nu',
     'collection.empty': 'Je hebt nog geen afspeellijsten bewaard.',
     'collection.pickMood': 'Kies een stemming',
     'collection.deletePlaylist': 'Afspeellijst verwijderen',
@@ -579,6 +581,7 @@ export const TRANSLATIONS = {
     'signup.failed': 'Impossible de créer le compte.',
 
     'collection.title': 'Ma collection',
+    'collection.nowPlaying': 'En cours de lecture',
     'collection.empty': 'Vous n’avez pas encore enregistré de playlist.',
     'collection.pickMood': 'Choisir une humeur',
     'collection.deletePlaylist': 'Supprimer la playlist',
