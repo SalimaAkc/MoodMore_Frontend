@@ -227,6 +227,9 @@ export const TRANSLATIONS = {
       'Delete your account? Your playlists and favourites go with it and this cannot be undone.',
     'settings.confirmDeleteButton': 'Yes, delete my account',
     'settings.deleteError': 'Could not delete the account.',
+    'settings.activeSessions': 'Active sessions',
+    'settings.currentSession': 'Current session',
+    'settings.noSessions': 'No active sessions.',
     'settings.note': 'Language, dark mode and autoplay are saved in this browser only.'
   },
 
@@ -437,6 +440,9 @@ export const TRANSLATIONS = {
       'Je account verwijderen? Je afspeellijsten en favorieten gaan mee en dit kan niet ongedaan worden gemaakt.',
     'settings.confirmDeleteButton': 'Ja, verwijder mijn account',
     'settings.deleteError': 'Kon het account niet verwijderen.',
+    'settings.activeSessions': 'Actieve sessies',
+    'settings.currentSession': 'Huidige sessie',
+    'settings.noSessions': 'Geen actieve sessies.',
     'settings.note': 'Taal, donkere modus en automatisch afspelen worden alleen in deze browser bewaard.'
   },
 
@@ -647,6 +653,9 @@ export const TRANSLATIONS = {
       'Supprimer votre compte ? Vos playlists et vos favoris partent avec, et cette action est définitive.',
     'settings.confirmDeleteButton': 'Oui, supprimer mon compte',
     'settings.deleteError': 'Impossible de supprimer le compte.',
+    'settings.activeSessions': 'Sesssions actives',
+    'settings.currentSession': 'Sesssion actuelle',
+    'settings.noSessions': 'Aucune sesssion active.',
     'settings.note': 'La langue, le mode sombre et la lecture automatique sont enregistrés dans ce navigateur seulement.'
   }
 }
