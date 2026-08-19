@@ -62,6 +62,13 @@ const deleting = ref(false)
 const deleteError = ref('')
 
 // ===================================================================
+// STATE - SESSIONS
+// ===================================================================
+
+const sessions = ref([])
+const sessionsLoading = ref(false)
+
+// ===================================================================
 // PROFILE MANAGEMENT
 // ===================================================================
 
@@ -107,10 +114,56 @@ async function saveProfile() {
 }
 
 // ===================================================================
+// SESSIONS MANAGEMENT
+// ===================================================================
+
+async function loadSessions() {
+  sessionsLoading.value = true
+  try {
+    const { data } = await auth.supabase.auth.getSession()
+    if (data.session) {
+      const userAgent = navigator.userAgent
+      sessions.value = [{
+        id: data.session.user.id,
+        device: getDeviceName(userAgent),
+        browser: getBrowserName(userAgent),
+        lastActive: new Date(data.session.created_at).toLocaleDateString(lang.current, {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        }),
+        current: true
+      }]
+    }
+  } catch (error) {
+    console.error('Error loading sessions:', error)
+  } finally {
+    sessionsLoading.value = false
+  }
+}
+
+function getDeviceName(userAgent) {
+  if (/mobile|android|iphone|ipod/i.test(userAgent)) return 'Mobile'
+  if (/tablet|ipad/i.test(userAgent)) return 'Tablet'
+  return 'Desktop'
+}
+
+function getBrowserName(userAgent) {
+  if (/firefox/i.test(userAgent)) return 'Firefox'
+  if (/safari/i.test(userAgent) && !/chrome/i.test(userAgent)) return 'Safari'
+  if (/chrome/i.test(userAgent)) return 'Chrome'
+  if (/edg/i.test(userAgent)) return 'Edge'
+  return 'Unknown Browser'
+}
+
+// ===================================================================
 // LIFECYCLE
 // ===================================================================
 
-onMounted(fillForm)
+onMounted(() => {
+  fillForm()
+  loadSessions()
+})
 watch(() => profileStore.profile, fillForm)
 
 // ===================================================================
@@ -398,6 +451,29 @@ async function logout() {
           <span v-if="emailMessage" class="saved">{{ emailMessage }}</span>
         </div>
       </div>
+    </section>
+
+    <!-- =================================================================
+         SESSIONS - Active sessions
+         ================================================================= -->
+    <section v-if="auth.user" class="card">
+      <h2>{{ lang.t('settings.activeSessions') }}</h2>
+
+      <p v-if="sessionsLoading" class="empty-message">{{ lang.t('common.loading') }}</p>
+
+      <div v-else-if="sessions.length" class="sessions-list">
+        <div v-for="session in sessions" :key="session.id" class="session-item">
+          <div class="session-info">
+            <div class="session-header">
+              <span class="device">💻 {{ session.device }}</span>
+              <span v-if="session.current" class="current-badge">{{ lang.t('settings.currentSession') }}</span>
+            </div>
+            <p class="session-details">{{ session.browser }} · {{ session.lastActive }}</p>
+          </div>
+        </div>
+      </div>
+
+      <p v-else class="empty-message">{{ lang.t('settings.noSessions') }}</p>
     </section>
 
     <section v-if="auth.user" class="card danger-card">
@@ -710,5 +786,58 @@ input:checked + .slider::before {
 input:focus-visible + .slider {
   outline: 2px solid var(--orange);
   outline-offset: 2px;
+}
+
+/* ===================================================================
+   SESSIONS - Active sessions list
+   =================================================================== */
+
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.session-item {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.session-info {
+  flex: 1;
+}
+
+.session-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.device {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.current-badge {
+  display: inline-block;
+  background: var(--tint-orange);
+  color: var(--orange);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.session-details {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  margin: 0;
 }
 </style>
