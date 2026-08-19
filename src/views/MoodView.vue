@@ -115,6 +115,8 @@ async function confirmSave() {
   })
 
   const isPublic = saveVisibility.value === 'public'
+  console.log('Saving playlist with visibility:', saveVisibility.value, 'isPublic:', isPublic)
+
   const result = await supabase.from('playlists').insert({
     user_id: auth.user.id,
     mood_id: mood.id,
@@ -123,9 +125,13 @@ async function confirmSave() {
     is_public: isPublic
   })
 
+  console.log('Insert result:', result)
+
   if (result.error) {
+    console.error('Save error:', result.error)
     saveError.value = lang.t('mood.saveError')
   } else {
+    console.log('Playlist saved successfully')
     saved.value = true
     playlists.reset()
   }
