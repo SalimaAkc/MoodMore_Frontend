@@ -94,7 +94,7 @@ onMounted(async () => {
   const [playlistResult, followerResult, followingResult] = await Promise.all([
     supabase
       .from('playlists')
-      .select('id, name, mood_id, created_at, songs')
+      .select('id, name, mood_id, created_at, songs, is_public')
       .eq('user_id', userId)
       .order('created_at', { ascending: false }),
 
