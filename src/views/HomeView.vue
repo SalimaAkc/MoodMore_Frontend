@@ -36,31 +36,24 @@ function firstName() {
 <template>
   <div class="page">
     <!-- =================================================================
-         ANIMATED MUSIC NOTES - Left side decorations
+         ANIMATED MUSIC NOTES - Background decorations
          ================================================================= -->
-    <div class="music-notes-left">
-      <span class="note" style="animation-delay: 0s">♪</span>
-      <span class="note" style="animation-delay: 2s">♫</span>
-      <span class="note" style="animation-delay: 4s">♪</span>
-      <span class="note" style="animation-delay: 6s">♫</span>
-      <span class="note" style="animation-delay: 8s">♪</span>
-      <span class="note" style="animation-delay: 10s">♫</span>
-      <span class="note" style="animation-delay: 12s">♪</span>
-      <span class="note" style="animation-delay: 14s">♫</span>
-    </div>
-
-    <!-- =================================================================
-         ANIMATED MUSIC NOTES - Right side decorations
-         ================================================================= -->
-    <div class="music-notes-right">
-      <span class="note" style="animation-delay: 1s">♫</span>
-      <span class="note" style="animation-delay: 3s">♪</span>
-      <span class="note" style="animation-delay: 5s">♫</span>
-      <span class="note" style="animation-delay: 7s">♪</span>
-      <span class="note" style="animation-delay: 9s">♫</span>
-      <span class="note" style="animation-delay: 11s">♪</span>
-      <span class="note" style="animation-delay: 13s">♫</span>
-      <span class="note" style="animation-delay: 15s">♪</span>
+    <div class="music-notes-bg">
+      <span class="note note-1" style="animation-delay: 0s">♪</span>
+      <span class="note note-2" style="animation-delay: 2s">♫</span>
+      <span class="note note-3" style="animation-delay: 4s">♪</span>
+      <span class="note note-4" style="animation-delay: 1s">♫</span>
+      <span class="note note-5" style="animation-delay: 3s">♪</span>
+      <span class="note note-6" style="animation-delay: 5s">♫</span>
+      <span class="note note-7" style="animation-delay: 2.5s">♪</span>
+      <span class="note note-8" style="animation-delay: 4.5s">♫</span>
+      <span class="note note-9" style="animation-delay: 1.5s">♪</span>
+      <span class="note note-10" style="animation-delay: 3.5s">♫</span>
+      <span class="note note-11" style="animation-delay: 0.5s">♪</span>
+      <span class="note note-12" style="animation-delay: 5.5s">♫</span>
+      <span class="note note-13" style="animation-delay: 2.2s">♪</span>
+      <span class="note note-14" style="animation-delay: 4.2s">♫</span>
+      <span class="note note-15" style="animation-delay: 1.8s">♪</span>
     </div>
 
     <!-- =================================================================
@@ -113,55 +106,102 @@ function firstName() {
 }
 
 /* ===================================================================
-   ANIMATED MUSIC NOTES - Floating decorations
+   ANIMATED MUSIC NOTES - Floating background decorations
    =================================================================== */
 
-.music-notes-left,
-.music-notes-right {
+.music-notes-bg {
   position: fixed;
   top: 0;
-  width: 120px;
+  left: 0;
+  width: 100vw;
   height: 100vh;
   pointer-events: none;
   z-index: 0;
-}
-
-.music-notes-left {
-  left: 0;
-}
-
-.music-notes-right {
-  right: 0;
+  overflow: hidden;
 }
 
 .note {
   position: absolute;
-  font-size: 2rem;
-  opacity: 0.15;
-  animation: float-up 20s infinite ease-in;
+  font-size: 2.5rem;
+  opacity: 0.12;
   display: block;
-  width: 120px;
-  text-align: center;
+  font-weight: 300;
 }
 
-.music-notes-left .note {
-  left: 0;
-}
-
-.music-notes-right .note {
-  right: 0;
-}
+.note-1 { left: 5%; top: 10%; animation: float-diagonal-1 25s infinite ease-in-out; }
+.note-2 { left: 15%; top: 20%; animation: float-diagonal-2 30s infinite ease-in-out; }
+.note-3 { left: 25%; top: 5%; animation: float-up 28s infinite ease-in; }
+.note-4 { left: 35%; top: 30%; animation: float-diagonal-1 26s infinite ease-in-out; }
+.note-5 { left: 45%; top: 15%; animation: float-diagonal-3 32s infinite ease-in-out; }
+.note-6 { left: 55%; top: 25%; animation: float-up 24s infinite ease-in; }
+.note-7 { left: 65%; top: 8%; animation: float-diagonal-2 27s infinite ease-in-out; }
+.note-8 { left: 75%; top: 20%; animation: float-diagonal-1 29s infinite ease-in-out; }
+.note-9 { left: 85%; top: 10%; animation: float-up 26s infinite ease-in; }
+.note-10 { left: 10%; top: 50%; animation: float-diagonal-3 28s infinite ease-in-out; }
+.note-11 { left: 40%; top: 60%; animation: float-up 25s infinite ease-in; }
+.note-12 { left: 70%; top: 45%; animation: float-diagonal-2 31s infinite ease-in-out; }
+.note-13 { left: 20%; top: 70%; animation: float-diagonal-1 27s infinite ease-in-out; }
+.note-14 { left: 60%; top: 55%; animation: float-up 29s infinite ease-in; }
+.note-15 { left: 80%; top: 65%; animation: float-diagonal-3 26s infinite ease-in-out; }
 
 @keyframes float-up {
   0% {
-    bottom: -60px;
-    opacity: 0.15;
+    transform: translateY(100vh) translateX(0);
+    opacity: 0.12;
   }
   50% {
-    opacity: 0.25;
+    opacity: 0.18;
   }
   100% {
-    bottom: 100vh;
+    transform: translateY(-100vh) translateX(0);
+    opacity: 0.05;
+  }
+}
+
+@keyframes float-diagonal-1 {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 0.18;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(60px);
+    opacity: 0.05;
+  }
+}
+
+@keyframes float-diagonal-2 {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 0.18;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(-60px);
+    opacity: 0.05;
+  }
+}
+
+@keyframes float-diagonal-3 {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0.12;
+  }
+  25% {
+    transform: translateY(75vh) translateX(40px);
+  }
+  75% {
+    transform: translateY(25vh) translateX(-40px);
+  }
+  50% {
+    opacity: 0.18;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(0);
     opacity: 0.05;
   }
 }
