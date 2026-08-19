@@ -124,15 +124,20 @@ async function loadSessions() {
     const { data } = await supabase.auth.getSession()
     if (data.session) {
       const userAgent = navigator.userAgent
+      const createdDate = new Date(data.session.created_at)
+      const formattedDate = isNaN(createdDate.getTime())
+        ? 'Today'
+        : createdDate.toLocaleDateString(lang.current, {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+          })
+
       sessions.value = [{
         id: data.session.user.id,
         device: getDeviceName(userAgent),
         browser: getBrowserName(userAgent),
-        lastActive: new Date(data.session.created_at).toLocaleDateString(lang.current, {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric'
-        }),
+        lastActive: formattedDate,
         current: true
       }]
     }
