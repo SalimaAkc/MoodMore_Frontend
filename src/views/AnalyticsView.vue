@@ -297,6 +297,8 @@ h1 {
   grid-template-columns: 1fr 320px;
   grid-template-rows: auto auto;
   gap: 20px;
+  column-gap: 20px;
+  row-gap: 12px;
   align-items: start;
 }
 
