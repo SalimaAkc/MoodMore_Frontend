@@ -294,7 +294,8 @@ h1 {
 
 .analytics-section {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 280px;
+  grid-template-rows: auto auto;
   gap: 20px;
   align-items: start;
 }
@@ -308,7 +309,8 @@ h1 {
   border: 1px solid var(--rule);
   border-radius: 16px;
   padding: 20px;
-  grid-column: 1;
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
 }
 
 .calendar-header {
@@ -407,8 +409,8 @@ h1 {
   border: 1px solid var(--rule);
   border-radius: 16px;
   padding: 16px;
-  grid-column: 2;
-  grid-row: 1;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
 }
 
 .legend-card h2 {
@@ -457,8 +459,8 @@ h1 {
   border: 1px solid var(--rule);
   border-radius: 16px;
   padding: 16px;
-  grid-column: 2;
-  grid-row: 2;
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
 }
 
 .stats-card h2 {
