@@ -9,6 +9,7 @@ import { useSettingsStore } from '@/stores/settings'
 import { useAuthStore } from '@/stores/auth'
 import { useProfileStore } from '@/stores/profile'
 import { useLanguageStore } from '@/stores/language'
+import { supabase } from '@/lib/supabase'
 import { LANGUAGES } from '@/lib/translations'
 
 // ===================================================================
@@ -120,7 +121,7 @@ async function saveProfile() {
 async function loadSessions() {
   sessionsLoading.value = true
   try {
-    const { data } = await auth.supabase.auth.getSession()
+    const { data } = await supabase.auth.getSession()
     if (data.session) {
       const userAgent = navigator.userAgent
       sessions.value = [{
