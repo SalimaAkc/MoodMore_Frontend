@@ -400,6 +400,7 @@ async function togglePublic(playlist) {
   gap: 2px;
   padding: 20px 20px 52px;
   color: var(--ink);
+  text-decoration: none;
 }
 
 .emoji {
