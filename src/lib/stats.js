@@ -1,22 +1,11 @@
-// ===================================================================
-// STATISTICS - Mood breakdown and analytics
-// ===================================================================
 
 import { MOODS } from './moods'
-
-// ===================================================================
-// CONFIGURATION
-// ===================================================================
 
 export const DEFAULT_DAYS = 30
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000
 
-// ===================================================================
-// PUBLIC API - Statistics functions
-// ===================================================================
 
-// get playlists from recent days
 export function recentPlaylists(playlists, days = DEFAULT_DAYS, now = new Date()) {
   if (!Array.isArray(playlists)) return []
 
@@ -28,19 +17,19 @@ export function recentPlaylists(playlists, days = DEFAULT_DAYS, now = new Date()
 
     if (!Number.isFinite(moment)) return false
 
-    // skip dates in the future (probably bad data)
+    // Dates in the future are almost always a broken clock, not a real save
     return moment >= start && moment <= end
   })
 }
 
-// show how many playlists per mood
+
 export function moodBreakdown(playlists, days = DEFAULT_DAYS, now = new Date()) {
   const recent = recentPlaylists(playlists, days, now)
 
   const counts = new Map()
 
   for (const playlist of recent) {
-    // only count real moods, not Favorites or Custom
+    
     const mood = MOODS.find(item => item.id === playlist.mood_id)
 
     if (!mood) continue
@@ -61,23 +50,24 @@ export function moodBreakdown(playlists, days = DEFAULT_DAYS, now = new Date()) 
     rows.push({
       mood: mood,
       count: count,
-      // rounded percentage (may not add to exactly 100)
+
       share: Math.round((count / total) * 100)
     })
   }
 
-  // most popular first
+  // Biggest first. Moods with the same count keep the order of MOODS, so
+  // the chart does not reshuffle itself between two equal moods.
   rows.sort((left, right) => right.count - left.count)
 
   return rows
 }
 
-// count total playlists in the breakdown
+// How many playlists the breakdown is built on
 export function totalSaved(breakdown) {
   return breakdown.reduce((sum, row) => sum + row.count, 0)
 }
 
-// get the mood with the most playlists
+// The mood somebody saved most, or nothing when the month is empty
 export function topMood(breakdown) {
   if (!breakdown.length) return null
 
