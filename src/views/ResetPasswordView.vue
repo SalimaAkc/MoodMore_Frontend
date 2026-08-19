@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/auth'
 import { useLanguageStore } from '@/stores/language'
+import PasswordInput from '@/components/PasswordInput.vue'
 
 // ===================================================================
 // STORE SETUP
@@ -111,12 +112,12 @@ async function savePassword() {
 
       <label>
         {{ lang.t('settings.newPassword') }}
-        <input v-model="newPassword" type="password" required minlength="6" autocomplete="new-password" />
+        <PasswordInput v-model="newPassword" required minlength="6" autocomplete="new-password" />
       </label>
 
       <label>
         {{ lang.t('settings.repeatPassword') }}
-        <input v-model="confirmPassword" type="password" required minlength="6" autocomplete="new-password" />
+        <PasswordInput v-model="confirmPassword" required minlength="6" autocomplete="new-password" />
       </label>
 
       <button class="btn" type="submit" :disabled="saving">

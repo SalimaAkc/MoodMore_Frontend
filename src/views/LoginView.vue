@@ -7,6 +7,7 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useLanguageStore } from '@/stores/language'
+import PasswordInput from '@/components/PasswordInput.vue'
 
 // ===================================================================
 // STORE SETUP
@@ -86,7 +87,7 @@ async function login() {
 
       <label>
         {{ lang.t('common.password') }}
-        <input v-model="password" type="password" required autocomplete="current-password" />
+        <PasswordInput v-model="password" required autocomplete="current-password" />
       </label>
 
       <!-- SUBMIT BUTTON -->

@@ -11,6 +11,7 @@ import { useProfileStore } from '@/stores/profile'
 import { useLanguageStore } from '@/stores/language'
 import { supabase } from '@/lib/supabase'
 import { LANGUAGES } from '@/lib/translations'
+import PasswordInput from '@/components/PasswordInput.vue'
 
 // ===================================================================
 // STORE SETUP
@@ -411,17 +412,17 @@ async function logout() {
 
         <label class="field">
           {{ lang.t('settings.currentPassword') }}
-          <input v-model="currentPassword" type="password" autocomplete="current-password" />
+          <PasswordInput v-model="currentPassword" autocomplete="current-password" />
         </label>
 
         <label class="field">
           {{ lang.t('settings.newPassword') }}
-          <input v-model="newPassword" type="password" autocomplete="new-password" />
+          <PasswordInput v-model="newPassword" autocomplete="new-password" />
         </label>
 
         <label class="field">
           {{ lang.t('settings.repeatPassword') }}
-          <input v-model="confirmPassword" type="password" autocomplete="new-password" />
+          <PasswordInput v-model="confirmPassword" autocomplete="new-password" />
         </label>
 
         <p v-if="passwordError" class="error-box">{{ passwordError }}</p>
@@ -445,7 +446,7 @@ async function logout() {
 
         <label class="field">
           {{ lang.t('settings.currentPassword') }}
-          <input v-model="emailPassword" type="password" autocomplete="current-password" />
+          <PasswordInput v-model="emailPassword" autocomplete="current-password" />
         </label>
 
         <p v-if="emailError" class="error-box">{{ emailError }}</p>
@@ -507,7 +508,7 @@ async function logout() {
 
         <label class="field">
           {{ lang.t('settings.currentPassword') }}
-          <input v-model="deletePassword" type="password" autocomplete="current-password" />
+          <PasswordInput v-model="deletePassword" autocomplete="current-password" />
         </label>
 
         <div class="actions">

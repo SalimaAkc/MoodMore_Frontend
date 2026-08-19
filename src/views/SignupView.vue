@@ -7,6 +7,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useLanguageStore } from '@/stores/language'
+import PasswordInput from '@/components/PasswordInput.vue'
 
 // ===================================================================
 // STORE SETUP
@@ -71,7 +72,7 @@ async function signup() {
 
       <label>
         {{ lang.t('common.password') }}
-        <input v-model="password" type="password" required minlength="6" autocomplete="new-password" />
+        <PasswordInput v-model="password" required minlength="6" autocomplete="new-password" />
       </label>
 
       <!-- SUBMIT BUTTON -->

@@ -16,6 +16,8 @@ export const TRANSLATIONS = {
     'common.playAll': 'Play all',
     'common.email': 'Email',
     'common.password': 'Password',
+    'common.showPassword': 'Show password',
+    'common.hidePassword': 'Hide password',
     'common.name': 'Name',
 
     'nav.searchPlaceholder': 'Search songs or artists…',
@@ -256,6 +258,8 @@ export const TRANSLATIONS = {
     'common.playAll': 'Alles afspelen',
     'common.email': 'E-mailadres',
     'common.password': 'Wachtwoord',
+    'common.showPassword': 'Wachtwoord tonen',
+    'common.hidePassword': 'Wachtwoord verbergen',
     'common.name': 'Naam',
 
     'nav.searchPlaceholder': 'Zoek nummers of artiesten…',
@@ -484,6 +488,8 @@ export const TRANSLATIONS = {
     'common.playAll': 'Tout lire',
     'common.email': 'E-mail',
     'common.password': 'Mot de passe',
+    'common.showPassword': 'Afficher le mot de passe',
+    'common.hidePassword': 'Masquer le mot de passe',
     'common.name': 'Nom',
 
     'nav.searchPlaceholder': 'Rechercher des titres ou des artistes…',
