@@ -46,7 +46,7 @@ const MENU_HEIGHT = 300
 
 const menu = ref(null)
 const newName = ref('')
-const newIsPublic = ref(false)
+const newVisibility = ref('private')
 const makingNew = ref(false)
 const busy = ref(false)
 const notice = ref('')
@@ -58,7 +58,7 @@ const nameInput = ref(null)
 
 async function startNewPlaylist() {
   makingNew.value = true
-  newIsPublic.value = false
+  newVisibility.value = 'private'
 
   await nextTick()
 
@@ -71,7 +71,7 @@ function closeMenu() {
   menu.value = null
   makingNew.value = false
   newName.value = ''
-  newIsPublic.value = false
+  newVisibility.value = 'private'
 }
 
 function openMenu(event, track) {
@@ -128,7 +128,8 @@ async function createAndAdd() {
 
   busy.value = true
 
-  const result = await playlists.createWithTrack(name, menu.value.track, auth.user.id, newIsPublic.value)
+  const isPublic = newVisibility.value === 'public'
+  const result = await playlists.createWithTrack(name, menu.value.track, auth.user.id, isPublic)
 
   busy.value = false
   reportResult(result, name)
@@ -264,11 +265,15 @@ function toggleFavorite(track) {
           :placeholder="lang.t('track.playlistName')"
         />
 
-        <!-- Visibility toggle -->
-        <div class="visibility-toggle">
+        <!-- Visibility options -->
+        <div class="visibility-options">
           <label>
-            <input v-model="newIsPublic" type="checkbox" />
-            <span>{{ newIsPublic ? '🌐 ' + lang.t('profile.public') : '🔒 ' + lang.t('profile.private') }}</span>
+            <input v-model="newVisibility" type="radio" value="private" />
+            <span>🔒 {{ lang.t('profile.private') }}</span>
+          </label>
+          <label>
+            <input v-model="newVisibility" type="radio" value="public" />
+            <span>🌐 {{ lang.t('profile.public') }}</span>
           </label>
         </div>
 
@@ -513,28 +518,26 @@ function toggleFavorite(track) {
   border-color: var(--orange);
 }
 
-.visibility-toggle {
+.visibility-options {
+  display: flex;
+  gap: 12px;
   padding: 0 4px;
 }
 
-.visibility-toggle label {
+.visibility-options label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
   font-size: 0.9rem;
   color: var(--ink-soft);
 }
 
-.visibility-toggle input[type="checkbox"] {
+.visibility-options input[type="radio"] {
   cursor: pointer;
   width: 16px;
   height: 16px;
   accent-color: var(--orange);
-}
-
-.visibility-toggle span {
-  flex: 1;
 }
 
 /* ===================================================================

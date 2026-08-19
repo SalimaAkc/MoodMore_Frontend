@@ -43,7 +43,7 @@ const saving = ref(false)
 const saved = ref(false)
 const saveError = ref('')
 const showSaveDialog = ref(false)
-const saveAsPublic = ref(false)
+const saveVisibility = ref('private')
 
 // ===================================================================
 // LIFECYCLE
@@ -114,12 +114,13 @@ async function confirmSave() {
     mood: lang.t('moodName.' + mood.id)
   })
 
+  const isPublic = saveVisibility.value === 'public'
   const result = await supabase.from('playlists').insert({
     user_id: auth.user.id,
     mood_id: mood.id,
     name: playlistName,
     songs: tracks.value,
-    is_public: saveAsPublic.value
+    is_public: isPublic
   })
 
   if (result.error) {
@@ -188,8 +189,12 @@ function cancelSave() {
 
         <div class="toggle-group">
           <label>
-            <input v-model="saveAsPublic" type="checkbox" />
-            <span>{{ saveAsPublic ? '🌐 ' + lang.t('profile.public') : '🔒 ' + lang.t('profile.private') }}</span>
+            <input v-model="saveVisibility" type="radio" value="private" />
+            <span>🔒 {{ lang.t('profile.private') }}</span>
+          </label>
+          <label>
+            <input v-model="saveVisibility" type="radio" value="public" />
+            <span>🌐 {{ lang.t('profile.public') }}</span>
           </label>
         </div>
 
@@ -321,6 +326,9 @@ function cancelSave() {
   padding: 16px;
   background: var(--paper);
   border-radius: var(--radius);
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .toggle-group label {
@@ -331,7 +339,7 @@ function cancelSave() {
   font-size: 0.95rem;
 }
 
-.toggle-group input[type="checkbox"] {
+.toggle-group input[type="radio"] {
   cursor: pointer;
   width: 18px;
   height: 18px;
