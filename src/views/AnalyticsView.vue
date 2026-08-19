@@ -271,20 +271,21 @@ onMounted(async () => {
    =================================================================== */
 
 .page {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 32px 16px;
 }
 
 h1 {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .subtitle {
   color: var(--ink-soft);
-  margin-bottom: 32px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
 }
 
 /* ===================================================================
@@ -292,9 +293,10 @@ h1 {
    =================================================================== */
 
 .analytics-section {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  align-items: start;
 }
 
 /* ===================================================================
@@ -305,18 +307,19 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 24px;
+  padding: 20px;
+  grid-column: 1;
 }
 
 .calendar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .calendar-header h2 {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 700;
   margin: 0;
 }
@@ -340,7 +343,7 @@ h1 {
 .calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+  gap: 6px;
 }
 
 .weekday {
@@ -403,7 +406,9 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 24px;
+  padding: 16px;
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .legend-card h2 {
@@ -413,9 +418,9 @@ h1 {
 }
 
 .legend-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .legend-item {
@@ -451,7 +456,9 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 24px;
+  padding: 16px;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .stats-card h2 {
@@ -491,18 +498,47 @@ h1 {
    MOBILE RESPONSIVE
    =================================================================== */
 
+@media (max-width: 1000px) {
+  .analytics-section {
+    grid-template-columns: 1fr;
+  }
+
+  .legend-card,
+  .stats-card {
+    grid-column: 1;
+  }
+
+  .legend-card {
+    grid-row: auto;
+  }
+
+  .stats-card {
+    grid-row: auto;
+  }
+
+  .legend-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
 @media (max-width: 600px) {
   .page {
-    padding: 20px 16px;
+    padding: 16px 12px;
   }
 
   h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   .calendar-header {
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
   }
 
   .calendar-header h2 {
@@ -514,16 +550,16 @@ h1 {
   }
 
   .day {
-    font-size: 0.8rem;
-    padding: 6px;
+    font-size: 0.75rem;
+    padding: 4px;
   }
 
   .mood-emoji {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
-  .legend-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .weekday {
+    font-size: 0.7rem;
   }
 }
 </style>
