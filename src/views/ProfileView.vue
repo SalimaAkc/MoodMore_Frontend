@@ -397,23 +397,26 @@ async function togglePublic(playlist) {
 .card-link {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
   padding: 20px 20px 52px;
   color: var(--ink);
 }
 
 .emoji {
   font-size: 2.2rem;
+  margin-bottom: 4px;
 }
 
 .name {
   font-weight: 700;
   font-size: 1.05rem;
+  line-height: 1.2;
 }
 
 .meta {
   font-size: 0.8rem;
   color: var(--ink-soft);
+  line-height: 1.2;
 }
 
 .privacy {
