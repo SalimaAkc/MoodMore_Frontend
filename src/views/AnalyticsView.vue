@@ -312,7 +312,7 @@ h1 {
   border-radius: 16px;
   padding: 18px;
   grid-column: 1 / 2;
-  grid-row: 1 / 3;
+  grid-row: 1;
 }
 
 .calendar-header {
