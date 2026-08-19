@@ -20,6 +20,7 @@ import CollectionView from '@/views/CollectionView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import PlaylistView from '@/views/PlaylistView.vue'
 import SettingsView from '@/views/SettingsView.vue'
+import AnalyticsView from '@/views/AnalyticsView.vue'
 import UsersView from '@/views/UsersView.vue'
 import UserProfileView from '@/views/UserProfileView.vue'
 
@@ -47,6 +48,7 @@ const routes = [
   // protected pages (login required)
   { path: '/profile', component: ProfileView, meta: { needsLogin: true } },
   { path: '/collection', component: CollectionView, meta: { needsLogin: true } },
+  { path: '/analytics', component: AnalyticsView, meta: { needsLogin: true } },
   { path: '/playlist/:id', component: PlaylistView, meta: { needsLogin: true } },
 
   // catch-all

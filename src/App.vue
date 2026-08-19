@@ -102,6 +102,7 @@ async function logout() {
 
       <template v-if="auth.user">
         <RouterLink to="/collection" class="link">{{ lang.t('nav.collection') }}</RouterLink>
+        <RouterLink to="/analytics" class="link" :title="lang.t('analytics.title')">📊</RouterLink>
 
         <RouterLink to="/profile" class="user" :title="lang.t('nav.profile')">
           <img v-if="avatarUrl()" :src="avatarUrl()" alt="" class="avatar" />

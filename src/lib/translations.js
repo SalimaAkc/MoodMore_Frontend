@@ -230,7 +230,22 @@ export const TRANSLATIONS = {
     'settings.activeSessions': 'Active sessions',
     'settings.currentSession': 'Current session',
     'settings.noSessions': 'No active sessions.',
-    'settings.note': 'Language, dark mode and autoplay are saved in this browser only.'
+    'settings.note': 'Language, dark mode and autoplay are saved in this browser only.',
+
+    'analytics.title': 'Your mood calendar',
+    'analytics.subtitle': 'See your mood patterns over time.',
+    'analytics.moods': 'Moods',
+    'analytics.stats': 'Stats',
+    'analytics.totalPlaylists': 'Playlists created',
+    'analytics.activeDays': 'Active days',
+    'analytics.loadError': 'Could not load your analytics.',
+    'analytics.sun': 'Sun',
+    'analytics.mon': 'Mon',
+    'analytics.tue': 'Tue',
+    'analytics.wed': 'Wed',
+    'analytics.thu': 'Thu',
+    'analytics.fri': 'Fri',
+    'analytics.sat': 'Sat'
   },
 
   nl: {
@@ -443,7 +458,22 @@ export const TRANSLATIONS = {
     'settings.activeSessions': 'Actieve sessies',
     'settings.currentSession': 'Huidige sessie',
     'settings.noSessions': 'Geen actieve sessies.',
-    'settings.note': 'Taal, donkere modus en automatisch afspelen worden alleen in deze browser bewaard.'
+    'settings.note': 'Taal, donkere modus en automatisch afspelen worden alleen in deze browser bewaard.',
+
+    'analytics.title': 'Jouw stemmingskalender',
+    'analytics.subtitle': 'Zie je stemmingspatronen over tijd.',
+    'analytics.moods': 'Stemmingen',
+    'analytics.stats': 'Statistieken',
+    'analytics.totalPlaylists': 'Lijsten gemaakt',
+    'analytics.activeDays': 'Actieve dagen',
+    'analytics.loadError': 'Kon jouw analytica niet laden.',
+    'analytics.sun': 'Zo',
+    'analytics.mon': 'Ma',
+    'analytics.tue': 'Di',
+    'analytics.wed': 'Wo',
+    'analytics.thu': 'Do',
+    'analytics.fri': 'Vr',
+    'analytics.sat': 'Za'
   },
 
   fr: {
@@ -656,6 +686,21 @@ export const TRANSLATIONS = {
     'settings.activeSessions': 'Sesssions actives',
     'settings.currentSession': 'Sesssion actuelle',
     'settings.noSessions': 'Aucune sesssion active.',
-    'settings.note': 'La langue, le mode sombre et la lecture automatique sont enregistrés dans ce navigateur seulement.'
+    'settings.note': 'La langue, le mode sombre et la lecture automatique sont enregistrés dans ce navigateur seulement.',
+
+    'analytics.title': 'Votre calendrier des humeurs',
+    'analytics.subtitle': 'Voir vos modèles d'humeur au fil du temps.',
+    'analytics.moods': 'Humeurs',
+    'analytics.stats': 'Statistiques',
+    'analytics.totalPlaylists': 'Playlists créées',
+    'analytics.activeDays': 'Jours actifs',
+    'analytics.loadError': 'Impossible de charger vos analyses.',
+    'analytics.sun': 'Dim',
+    'analytics.mon': 'Lun',
+    'analytics.tue': 'Mar',
+    'analytics.wed': 'Mer',
+    'analytics.thu': 'Jeu',
+    'analytics.fri': 'Ven',
+    'analytics.sat': 'Sam'
   }
 }
