@@ -36,6 +36,34 @@ function firstName() {
 <template>
   <div class="page">
     <!-- =================================================================
+         ANIMATED MUSIC NOTES - Left side decorations
+         ================================================================= -->
+    <div class="music-notes-left">
+      <span class="note" style="animation-delay: 0s">♪</span>
+      <span class="note" style="animation-delay: 2s">♫</span>
+      <span class="note" style="animation-delay: 4s">♪</span>
+      <span class="note" style="animation-delay: 6s">♫</span>
+      <span class="note" style="animation-delay: 8s">♪</span>
+      <span class="note" style="animation-delay: 10s">♫</span>
+      <span class="note" style="animation-delay: 12s">♪</span>
+      <span class="note" style="animation-delay: 14s">♫</span>
+    </div>
+
+    <!-- =================================================================
+         ANIMATED MUSIC NOTES - Right side decorations
+         ================================================================= -->
+    <div class="music-notes-right">
+      <span class="note" style="animation-delay: 1s">♫</span>
+      <span class="note" style="animation-delay: 3s">♪</span>
+      <span class="note" style="animation-delay: 5s">♫</span>
+      <span class="note" style="animation-delay: 7s">♪</span>
+      <span class="note" style="animation-delay: 9s">♫</span>
+      <span class="note" style="animation-delay: 11s">♪</span>
+      <span class="note" style="animation-delay: 13s">♫</span>
+      <span class="note" style="animation-delay: 15s">♪</span>
+    </div>
+
+    <!-- =================================================================
          HEADER - Introduction and greeting
          ================================================================= -->
     <header class="intro">
@@ -80,6 +108,62 @@ function firstName() {
   max-width: 1000px;
   margin: 0 auto;
   padding: 60px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===================================================================
+   ANIMATED MUSIC NOTES - Floating decorations
+   =================================================================== */
+
+.music-notes-left,
+.music-notes-right {
+  position: fixed;
+  top: 0;
+  width: 120px;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.music-notes-left {
+  left: 0;
+}
+
+.music-notes-right {
+  right: 0;
+}
+
+.note {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.15;
+  animation: float-up 20s infinite ease-in;
+  display: block;
+  width: 120px;
+  text-align: center;
+}
+
+.music-notes-left .note {
+  left: 0;
+}
+
+.music-notes-right .note {
+  right: 0;
+}
+
+@keyframes float-up {
+  0% {
+    bottom: -60px;
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.25;
+  }
+  100% {
+    bottom: 100vh;
+    opacity: 0.05;
+  }
 }
 
 /* ===================================================================
@@ -89,6 +173,8 @@ function firstName() {
 .intro {
   text-align: center;
   margin-bottom: 48px;
+  position: relative;
+  z-index: 1;
 }
 
 .hello {
@@ -114,6 +200,8 @@ function firstName() {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .card {
@@ -161,6 +249,8 @@ function firstName() {
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 
 .signup-box p {
