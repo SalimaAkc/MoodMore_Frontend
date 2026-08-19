@@ -148,41 +148,41 @@ function firstName() {
   font-weight: 300;
 }
 
-.note-1 { left: 5%; top: 10%; animation: float-diagonal-1 25s infinite ease-in-out; }
-.note-2 { left: 15%; top: 20%; animation: float-diagonal-2 30s infinite ease-in-out; }
-.note-3 { left: 25%; top: 5%; animation: float-up 28s infinite ease-in; }
-.note-4 { left: 35%; top: 30%; animation: float-diagonal-1 26s infinite ease-in-out; }
-.note-5 { left: 45%; top: 15%; animation: float-diagonal-3 32s infinite ease-in-out; }
-.note-6 { left: 55%; top: 25%; animation: float-up 24s infinite ease-in; }
-.note-7 { left: 65%; top: 8%; animation: float-diagonal-2 27s infinite ease-in-out; }
-.note-8 { left: 75%; top: 20%; animation: float-diagonal-1 29s infinite ease-in-out; }
-.note-9 { left: 85%; top: 10%; animation: float-up 26s infinite ease-in; }
-.note-10 { left: 10%; top: 50%; animation: float-diagonal-3 28s infinite ease-in-out; }
-.note-11 { left: 40%; top: 60%; animation: float-up 25s infinite ease-in; }
-.note-12 { left: 70%; top: 45%; animation: float-diagonal-2 31s infinite ease-in-out; }
-.note-13 { left: 20%; top: 70%; animation: float-diagonal-1 27s infinite ease-in-out; }
-.note-14 { left: 60%; top: 55%; animation: float-up 29s infinite ease-in; }
-.note-15 { left: 80%; top: 65%; animation: float-diagonal-3 26s infinite ease-in-out; }
-.note-16 { left: 12%; top: 35%; animation: float-up 27s infinite ease-in; }
-.note-17 { left: 28%; top: 50%; animation: float-diagonal-1 30s infinite ease-in-out; }
-.note-18 { left: 38%; top: 8%; animation: float-diagonal-2 25s infinite ease-in-out; }
-.note-19 { left: 52%; top: 40%; animation: float-up 31s infinite ease-in; }
-.note-20 { left: 68%; top: 30%; animation: float-diagonal-3 28s infinite ease-in-out; }
-.note-21 { left: 8%; top: 75%; animation: float-diagonal-1 26s infinite ease-in-out; }
-.note-22 { left: 32%; top: 65%; animation: float-up 29s infinite ease-in; }
-.note-23 { left: 48%; top: 75%; animation: float-diagonal-2 32s infinite ease-in-out; }
-.note-24 { left: 62%; top: 12%; animation: float-up 24s infinite ease-in; }
-.note-25 { left: 78%; top: 55%; animation: float-diagonal-3 27s infinite ease-in-out; }
-.note-26 { left: 18%; top: 42%; animation: float-diagonal-1 30s infinite ease-in-out; }
-.note-27 { left: 42%; top: 18%; animation: float-up 26s infinite ease-in; }
-.note-28 { left: 58%; top: 68%; animation: float-diagonal-2 28s infinite ease-in-out; }
-.note-29 { left: 88%; top: 35%; animation: float-up 31s infinite ease-in; }
-.note-30 { left: 22%; top: 58%; animation: float-diagonal-3 25s infinite ease-in-out; }
-.note-31 { left: 72%; top: 72%; animation: float-diagonal-1 29s infinite ease-in-out; }
-.note-32 { left: 2%; top: 22%; animation: float-up 27s infinite ease-in; }
-.note-33 { left: 52%; top: 5%; animation: float-diagonal-2 30s infinite ease-in-out; }
-.note-34 { left: 92%; top: 48%; animation: float-up 26s infinite ease-in; }
-.note-35 { left: 36%; top: 42%; animation: float-diagonal-3 28s infinite ease-in-out; }
+.note-1 { left: 5%; top: 10%; animation: float-diagonal-1 45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-2 { left: 15%; top: 20%; animation: float-diagonal-2 50s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-3 { left: 25%; top: 5%; animation: float-up 48s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-4 { left: 35%; top: 30%; animation: float-diagonal-1 46s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-5 { left: 45%; top: 15%; animation: float-diagonal-3 52s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-6 { left: 55%; top: 25%; animation: float-up 44s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-7 { left: 65%; top: 8%; animation: float-diagonal-2 47s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-8 { left: 75%; top: 20%; animation: float-diagonal-1 49s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-9 { left: 85%; top: 10%; animation: float-up 46s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-10 { left: 10%; top: 50%; animation: float-diagonal-3 48s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-11 { left: 40%; top: 60%; animation: float-up 45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-12 { left: 70%; top: 45%; animation: float-diagonal-2 51s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-13 { left: 20%; top: 70%; animation: float-diagonal-1 47s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-14 { left: 60%; top: 55%; animation: float-up 49s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-15 { left: 80%; top: 65%; animation: float-diagonal-3 46s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-16 { left: 12%; top: 35%; animation: float-up 47s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-17 { left: 28%; top: 50%; animation: float-diagonal-1 50s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-18 { left: 38%; top: 8%; animation: float-diagonal-2 45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-19 { left: 52%; top: 40%; animation: float-up 51s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-20 { left: 68%; top: 30%; animation: float-diagonal-3 48s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-21 { left: 8%; top: 75%; animation: float-diagonal-1 46s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-22 { left: 32%; top: 65%; animation: float-up 49s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-23 { left: 48%; top: 75%; animation: float-diagonal-2 52s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-24 { left: 62%; top: 12%; animation: float-up 44s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-25 { left: 78%; top: 55%; animation: float-diagonal-3 47s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-26 { left: 18%; top: 42%; animation: float-diagonal-1 50s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-27 { left: 42%; top: 18%; animation: float-up 46s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-28 { left: 58%; top: 68%; animation: float-diagonal-2 48s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-29 { left: 88%; top: 35%; animation: float-up 51s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-30 { left: 22%; top: 58%; animation: float-diagonal-3 45s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-31 { left: 72%; top: 72%; animation: float-diagonal-1 49s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-32 { left: 2%; top: 22%; animation: float-up 47s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-33 { left: 52%; top: 5%; animation: float-diagonal-2 50s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-34 { left: 92%; top: 48%; animation: float-up 46s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.note-35 { left: 36%; top: 42%; animation: float-diagonal-3 48s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
 
 @keyframes float-up {
   0% {
