@@ -42,6 +42,8 @@ const loadingMore = ref(false)
 const saving = ref(false)
 const saved = ref(false)
 const saveError = ref('')
+const showSaveDialog = ref(false)
+const saveAsPublic = ref(false)
 
 // ===================================================================
 // LIFECYCLE
@@ -93,14 +95,20 @@ async function loadMore() {
 // SAVE PLAYLIST
 // ===================================================================
 
-async function saveToCollection() {
+function promptSaveToCollection() {
   if (!auth.user) {
     router.push('/login')
     return
   }
 
+  showSaveDialog.value = true
+  saveAsPublic.value = false
+}
+
+async function confirmSave() {
   saving.value = true
   saveError.value = ''
+  showSaveDialog.value = false
 
   const playlistName = lang.t('mood.playlistName', {
     mood: lang.t('moodName.' + mood.id)
@@ -110,7 +118,8 @@ async function saveToCollection() {
     user_id: auth.user.id,
     mood_id: mood.id,
     name: playlistName,
-    songs: tracks.value
+    songs: tracks.value,
+    is_public: saveAsPublic.value
   })
 
   if (result.error) {
@@ -121,6 +130,10 @@ async function saveToCollection() {
   }
 
   saving.value = false
+}
+
+function cancelSave() {
+  showSaveDialog.value = false
 }
 </script>
 
@@ -141,7 +154,7 @@ async function saveToCollection() {
           <button
             class="btn-outline"
             :disabled="loading || saving || saved || !tracks.length"
-            @click="saveToCollection"
+            @click="promptSaveToCollection"
           >
             {{ saved ? '✓ ' + lang.t('mood.saved') : saving ? lang.t('common.saving') : '♥ ' + lang.t('mood.saveToCollection') }}
           </button>
@@ -165,6 +178,30 @@ async function saveToCollection() {
           </button>
         </div>
       </template>
+    </div>
+
+    <!-- Save dialog with public/private toggle -->
+    <div v-if="showSaveDialog" class="dialog-overlay">
+      <div class="dialog">
+        <h2>{{ lang.t('mood.saveToCollection') }}</h2>
+        <p>{{ lang.t('profile.privacyNote') }}</p>
+
+        <div class="toggle-group">
+          <label>
+            <input v-model="saveAsPublic" type="checkbox" />
+            <span>{{ saveAsPublic ? lang.t('profile.public') : lang.t('profile.private') }}</span>
+          </label>
+        </div>
+
+        <div class="buttons">
+          <button class="btn" @click="confirmSave" :disabled="saving">
+            {{ saving ? lang.t('common.saving') : lang.t('mood.saveToCollection') }}
+          </button>
+          <button class="btn-outline" @click="cancelSave" :disabled="saving">
+            {{ lang.t('common.cancel') }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -240,6 +277,76 @@ async function saveToCollection() {
   padding: 24px 0;
 }
 
+/* ===================================================================
+   SAVE DIALOG
+   =================================================================== */
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.dialog h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.dialog p {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.toggle-group {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: var(--paper);
+  border-radius: var(--radius);
+}
+
+.toggle-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.toggle-group input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--orange);
+}
+
+.dialog .buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.dialog .buttons button {
+  flex: 1;
+}
+
 @media (max-width: 700px) {
   .header {
     padding: 32px 20px;
@@ -255,6 +362,10 @@ async function saveToCollection() {
   }
   .content {
     padding: 20px;
+  }
+
+  .dialog {
+    padding: 24px;
   }
 }
 </style>
