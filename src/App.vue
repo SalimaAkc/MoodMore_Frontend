@@ -254,11 +254,13 @@ async function logout() {
 }
 
 .avatar {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: center;
   border: 1px solid var(--rule);
+  background: var(--card-2);
 }
 
 .username {
