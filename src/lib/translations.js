@@ -127,7 +127,6 @@ export const TRANSLATIONS = {
     'profile.makePrivate': 'Hide this playlist from your profile',
     'profile.privacyNote': 'Nobody else can open your profile yet, so this only decides what will be shown once they can.',
     'profile.privacyError': 'Could not change that. Try again.',
-    'profile.loadError': 'Could not load your profile.',
 
     'users.title': 'Find users',
     'users.subtitle': 'Search for other people and follow them.',
@@ -371,7 +370,6 @@ export const TRANSLATIONS = {
     'profile.makePrivate': 'Deze afspeellijst van je profiel verbergen',
     'profile.privacyNote': 'Niemand anders kan je profiel nog openen, dit bepaalt alleen wat er straks te zien is.',
     'profile.privacyError': 'Kon dat niet wijzigen. Probeer opnieuw.',
-    'profile.loadError': 'Kon je profiel niet laden.',
 
     'users.title': 'Gebruikers zoeken',
     'users.subtitle': 'Zoek andere mensen en volg ze.',
@@ -617,7 +615,6 @@ export const TRANSLATIONS = {
     'profile.makePrivate': 'Masquer cette playlist de votre profil',
     'profile.privacyNote': 'Personne d’autre ne peut encore ouvrir votre profil, ceci détermine seulement ce qui sera visible ensuite.',
     'profile.privacyError': 'Impossible de modifier. Réessayez.',
-    'profile.loadError': 'Impossible de charger votre profil.',
 
     'users.title': 'Trouver des utilisateurs',
     'users.subtitle': 'Cherchez d’autres personnes et abonnez-vous.',
