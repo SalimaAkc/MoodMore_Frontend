@@ -271,24 +271,21 @@ onMounted(async () => {
    =================================================================== */
 
 .page {
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 20px 16px;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+  padding: 24px 20px;
 }
 
 h1 {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .subtitle {
   color: var(--ink-soft);
-  margin-bottom: 12px;
-  font-size: 0.9rem;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
 }
 
 /* ===================================================================
@@ -297,12 +294,10 @@ h1 {
 
 .analytics-section {
   display: grid;
-  grid-template-columns: 1fr 260px;
+  grid-template-columns: 1fr 320px;
   grid-template-rows: auto auto;
-  gap: 16px;
+  gap: 20px;
   align-items: start;
-  flex: 1;
-  overflow: hidden;
 }
 
 /* ===================================================================
@@ -313,21 +308,20 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 14px;
+  padding: 18px;
   grid-column: 1 / 2;
   grid-row: 1 / 3;
-  overflow: auto;
 }
 
 .calendar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .calendar-header h2 {
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   margin: 0;
 }
@@ -367,17 +361,17 @@ h1 {
 .day {
   aspect-ratio: 1;
   border: 1px solid var(--rule);
-  border-radius: 8px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  font-size: 0.8rem;
-  padding: 4px;
+  gap: 3px;
+  font-size: 0.85rem;
+  padding: 6px;
   background: var(--paper);
   cursor: default;
-  min-height: 50px;
+  min-height: 60px;
 }
 
 .day.empty {
@@ -396,15 +390,15 @@ h1 {
 }
 
 .mood-emoji {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
 }
 
 .playlist-count {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
   background: rgba(0, 0, 0, 0.1);
-  padding: 1px 4px;
-  border-radius: 3px;
+  padding: 2px 5px;
+  border-radius: 4px;
 }
 
 /* ===================================================================
@@ -415,15 +409,15 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 12px;
+  padding: 16px;
   grid-column: 2 / 3;
   grid-row: 1 / 2;
 }
 
 .legend-card h2 {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .legend-grid {
@@ -435,25 +429,25 @@ h1 {
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 6px;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
   background: var(--paper);
 }
 
 .legend-color {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 1.1rem;
   flex-shrink: 0;
 }
 
 .legend-item span {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 500;
 }
 
@@ -465,42 +459,42 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 12px;
+  padding: 16px;
   grid-column: 2 / 3;
   grid-row: 2 / 3;
 }
 
 .stats-card h2 {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .stats-grid {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding: 12px;
   background: var(--paper);
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .stat-value {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: var(--orange);
 }
 
 .stat-label {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--ink-soft);
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 /* ===================================================================
