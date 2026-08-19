@@ -373,6 +373,20 @@ export const TRANSLATIONS = {
     'profile.privacyError': 'Kon dat niet wijzigen. Probeer opnieuw.',
     'profile.loadError': 'Kon je profiel niet laden.',
 
+    'users.title': 'Gebruikers zoeken',
+    'users.subtitle': 'Zoek andere mensen en volg ze.',
+    'users.searchPlaceholder': 'Zoek op naam of e-mail…',
+    'users.search': 'Zoeken',
+    'users.typeToSearch': 'Typ een naam om mensen te vinden.',
+    'users.noResults': 'Niemand gevonden. Probeer een andere naam.',
+    'users.follow': 'Volgen',
+    'users.unfollow': 'Volgend',
+
+    'user.notFound': 'Deze gebruiker bestaat niet.',
+    'user.loadError': 'Kon deze gebruiker niet laden.',
+    'user.publicPlaylists': 'Openbare afspeellijsten',
+    'user.noPublicPlaylists': 'Deze gebruiker heeft nog geen afspeellijsten gedeeld.',
+
     'playlist.label': 'BEWAARDE LIJST',
     'playlist.editing': 'BEWERKEN',
     'playlist.edit': 'Bewerken',
@@ -604,6 +618,20 @@ export const TRANSLATIONS = {
     'profile.privacyNote': 'Personne d’autre ne peut encore ouvrir votre profil, ceci détermine seulement ce qui sera visible ensuite.',
     'profile.privacyError': 'Impossible de modifier. Réessayez.',
     'profile.loadError': 'Impossible de charger votre profil.',
+
+    'users.title': 'Trouver des utilisateurs',
+    'users.subtitle': 'Cherchez d’autres personnes et abonnez-vous.',
+    'users.searchPlaceholder': 'Rechercher par nom ou e-mail…',
+    'users.search': 'Rechercher',
+    'users.typeToSearch': 'Tapez un nom pour trouver des personnes.',
+    'users.noResults': 'Aucun résultat. Essayez un autre nom.',
+    'users.follow': 'S’abonner',
+    'users.unfollow': 'Abonné',
+
+    'user.notFound': 'Cet utilisateur n’existe pas.',
+    'user.loadError': 'Impossible de charger cet utilisateur.',
+    'user.publicPlaylists': 'Playlists publiques',
+    'user.noPublicPlaylists': 'Cet utilisateur n’a encore partagé aucune playlist.',
 
     'playlist.label': 'PLAYLIST ENREGISTRÉE',
     'playlist.editing': 'MODIFICATION',
