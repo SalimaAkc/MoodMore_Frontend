@@ -271,21 +271,24 @@ onMounted(async () => {
    =================================================================== */
 
 .page {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 32px 16px;
+  padding: 20px 16px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 h1 {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 800;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .subtitle {
   color: var(--ink-soft);
-  margin-bottom: 20px;
-  font-size: 0.95rem;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
 }
 
 /* ===================================================================
@@ -294,10 +297,12 @@ h1 {
 
 .analytics-section {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr 260px;
   grid-template-rows: auto auto;
-  gap: 20px;
+  gap: 16px;
   align-items: start;
+  flex: 1;
+  overflow: hidden;
 }
 
 /* ===================================================================
@@ -308,20 +313,21 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 20px;
+  padding: 14px;
   grid-column: 1 / 2;
   grid-row: 1 / 3;
+  overflow: auto;
 }
 
 .calendar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .calendar-header h2 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   margin: 0;
 }
@@ -361,16 +367,17 @@ h1 {
 .day {
   aspect-ratio: 1;
   border: 1px solid var(--rule);
-  border-radius: 12px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  font-size: 0.9rem;
-  padding: 8px;
+  gap: 2px;
+  font-size: 0.8rem;
+  padding: 4px;
   background: var(--paper);
   cursor: default;
+  min-height: 50px;
 }
 
 .day.empty {
@@ -389,15 +396,15 @@ h1 {
 }
 
 .mood-emoji {
-  font-size: 1.6rem;
+  font-size: 1.3rem;
 }
 
 .playlist-count {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   background: rgba(0, 0, 0, 0.1);
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 1px 4px;
+  border-radius: 3px;
 }
 
 /* ===================================================================
@@ -408,15 +415,15 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 16px;
+  padding: 12px;
   grid-column: 2 / 3;
   grid-row: 1 / 2;
 }
 
 .legend-card h2 {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .legend-grid {
@@ -428,25 +435,25 @@ h1 {
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
   background: var(--paper);
 }
 
 .legend-color {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
   flex-shrink: 0;
 }
 
 .legend-item span {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 500;
 }
 
@@ -458,42 +465,42 @@ h1 {
   background: var(--card);
   border: 1px solid var(--rule);
   border-radius: 16px;
-  padding: 16px;
+  padding: 12px;
   grid-column: 2 / 3;
   grid-row: 2 / 3;
 }
 
 .stats-card h2 {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px;
+  padding: 10px;
   background: var(--paper);
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 .stat-value {
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: var(--orange);
 }
 
 .stat-label {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: var(--ink-soft);
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 /* ===================================================================
