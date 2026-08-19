@@ -45,7 +45,7 @@ const toggleFollowLoading = ref(false)
 // ===================================================================
 
 const publicPlaylists = computed(() => {
-  return playlists.value.filter(p => p.is_public !== false)
+  return playlists.value.filter(p => p.is_public === true)
 })
 
 // ===================================================================
