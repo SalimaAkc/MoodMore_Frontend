@@ -186,62 +186,61 @@ function firstName() {
 
 @keyframes float-up {
   0% {
-    transform: translateY(100vh) translateX(0);
+    transform: translateY(0) translateX(0);
     opacity: 0.12;
   }
   50% {
     opacity: 0.18;
   }
   100% {
-    transform: translateY(-100vh) translateX(0);
+    transform: translateY(-120vh) translateX(0);
     opacity: 0.05;
   }
 }
 
 @keyframes float-diagonal-1 {
   0% {
-    transform: translateY(100vh) translateX(0);
+    transform: translateY(0) translateX(0);
     opacity: 0.12;
   }
   50% {
     opacity: 0.18;
   }
   100% {
-    transform: translateY(-100vh) translateX(60px);
+    transform: translateY(-120vh) translateX(60px);
     opacity: 0.05;
   }
 }
 
 @keyframes float-diagonal-2 {
   0% {
-    transform: translateY(100vh) translateX(0);
+    transform: translateY(0) translateX(0);
     opacity: 0.12;
   }
   50% {
     opacity: 0.18;
   }
   100% {
-    transform: translateY(-100vh) translateX(-60px);
+    transform: translateY(-120vh) translateX(-60px);
     opacity: 0.05;
   }
 }
 
 @keyframes float-diagonal-3 {
   0% {
-    transform: translateY(100vh) translateX(0);
+    transform: translateY(0) translateX(0);
     opacity: 0.12;
   }
   25% {
-    transform: translateY(75vh) translateX(40px);
-  }
-  75% {
-    transform: translateY(25vh) translateX(-40px);
-  }
-  50% {
+    transform: translateY(30vh) translateX(40px);
     opacity: 0.18;
   }
+  75% {
+    transform: translateY(90vh) translateX(-40px);
+    opacity: 0.15;
+  }
   100% {
-    transform: translateY(-100vh) translateX(0);
+    transform: translateY(-120vh) translateX(0);
     opacity: 0.05;
   }
 }
