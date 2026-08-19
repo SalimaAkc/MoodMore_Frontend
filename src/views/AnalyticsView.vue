@@ -312,7 +312,7 @@ h1 {
   border-radius: 16px;
   padding: 18px;
   grid-column: 1 / 2;
-  grid-row: 1;
+  grid-row: 1 / 3;
 }
 
 .calendar-header {
@@ -414,6 +414,7 @@ h1 {
   padding: 16px;
   grid-column: 2 / 3;
   grid-row: 1 / 2;
+  align-self: start;
 }
 
 .legend-card h2 {
@@ -464,6 +465,7 @@ h1 {
   padding: 16px;
   grid-column: 2 / 3;
   grid-row: 2 / 3;
+  align-self: start;
 }
 
 .stats-card h2 {
