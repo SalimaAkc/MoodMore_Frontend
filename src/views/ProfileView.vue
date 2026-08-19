@@ -114,7 +114,7 @@ onMounted(async () => {
   } else {
     savedPlaylists.value = playlistResult.data.map(playlist => ({
       ...playlist,
-      is_public: playlist.is_public === true
+      is_public: !!playlist.is_public
     }))
   }
 
